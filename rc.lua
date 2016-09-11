@@ -48,12 +48,6 @@ awful.menu.menu_keys.close = { "Escape", "BackSpace", }
 
 -- customization
 
--- This is used later as the default terminal and editor to run.
-terminal = "lxterminal"
-switchUserCmd="/usr/bin/dm-tool switch-to-user bhanu"
-editor = os.getenv("EDITOR") or "editor"
-editor_cmd = terminal .. " -e " .. editor
-screenshot = "scrot -z " .. os.getenv("HOME") .. "/Shots/%Y-%m-%d-%h-%s_$wx$h.png"
 
 customization = {}
 customization.config = {}
@@ -86,7 +80,7 @@ customization.default.compmgr = 'xcompmgr'
 customization.default.compmgr_args = '-f -c -s'
 customization.default.wallpaper_change_interval = 15
 
-customization.option.wallpaper_change_p = true
+customization.option.wallpaper_change_p = false
 customization.option.tag_persistent_p = true
 
 naughty.config.presets.low.opacity = customization.default.property.low_naughty_opacity
@@ -271,9 +265,9 @@ end
 
 --{{
 local tools = {
-    terminal = "sakura",
+    terminal = "lxterminal",
     system = {
-        filemanager = "pcmanfm",
+        filemanager = "nautilus",
         taskmanager = "lxtask",
     },
     browser = {
@@ -281,6 +275,10 @@ local tools = {
     editor = {
     },
 }
+
+-- This is used later as the default terminal and editor to run.
+switchUserCmd="/usr/bin/dm-tool switch-to-user bhanu"
+screenshot = "scrot -z " .. os.getenv("HOME") .. "/Shots/%Y-%m-%d-%h-%s_$wx$h.png"
 
 tools.browser.primary = os.getenv("BROWSER") or "firefox"
 tools.browser.secondary = ({chromium="firefox", firefox="chromium"})[tools.browser.primary]
@@ -1685,7 +1683,8 @@ end
 customization.widgets.date = wibox.widget.textbox()
 vicious.register(customization.widgets.date, vicious.widgets.date, "%x %X%Z", 1)
 do
-    local prog1="gnome-control-center datetime"
+    -- local prog1="gnome-control-center datetime"
+    local prog1="date"
     local started1=false
     local prog2="gnome-control-center region"
     local started2=false
@@ -1985,7 +1984,7 @@ end),
 --- Iterate
 awful.key({ modkey,           }, "Left",   awful.tag.viewprev       ),
 awful.key({ modkey,           }, "Right",  awful.tag.viewnext       ),
-awful.key({ modkey,           }, "Return", function () awful.util.spawn(terminal) end),
+awful.key({ modkey,           }, "Return", function () awful.util.spawn(tools.terminal) end),
 
 --- Layout
 
@@ -2067,6 +2066,7 @@ awful.key({ modkey, }, "x", function() mymainmenu:toggle({keygrabber=true}) end)
 awful.key({ modkey, }, "X", function() mymainmenu:toggle({keygrabber=true}) end),
 
 uniarg:key_repeat({ modkey,           }, "Return", function () awful.util.spawn(tools.terminal) end),
+uniarg:key_repeat({ modkey, "Shift"   }, "Return", function () awful.util.spawn(tools.terminal) end, 3),
 
 uniarg:key_repeat({ modkey, "Mod1" }, "Return", function () awful.util.spawn("gksudo " .. tools.terminal) end),
 
