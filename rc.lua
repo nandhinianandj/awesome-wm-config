@@ -7,6 +7,7 @@ package.path = config_path .. "/modules/?/init.lua;" .. package.path
 
 local math = require("math")
 local gears = require("gears")
+-- local scratch = require("scratch")
 awful.client = require("awful.client")
 awful.screen = require("awful.screen")
 awful.rules = require("awful.rules")
@@ -2037,6 +2038,10 @@ awful.key({modkey}, "F4", function()
     awful.util.getdir("cache") .. "/history_eval"
     )
 end),
+-- Drop down a scratch bar and execute terminal
+-- awful.key({ 	}, "F1",  function ()
+-- 	scratch.drop(tools.terminal, "top", "left", 0.5, 0.5, false, mouse.screen)
+-- end),
 
 awful.key({ modkey }, "c", function ()
     awful.util.spawn(tools.editor.primary .. " " .. awful.util.getdir("config") .. "/rc.lua" )
@@ -2400,6 +2405,9 @@ awful.key({ "Mod1",   }, "F4", customization.func.client_kill),
 awful.key({ modkey,           }, "f", customization.func.client_fullscreen),
 
 awful.key({ modkey,           }, "m", customization.func.client_maximize),
+
+-- Copy client selection to scratch
+-- awful.key({ modkey,           }, "c", scratch.pad.set(c, 0.3, 0.3, false, mouse.screen)),
 
 -- move client to sides, i.e., sidelining
 
