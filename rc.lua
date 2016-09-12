@@ -81,7 +81,7 @@ customization.default.compmgr = 'xcompmgr'
 customization.default.compmgr_args = '-f -c -s'
 customization.default.wallpaper_change_interval = 15
 
-customization.option.wallpaper_change_p = false
+customization.option.wallpaper_change_p = true
 customization.option.tag_persistent_p = true
 
 naughty.config.presets.low.opacity = customization.default.property.low_naughty_opacity
