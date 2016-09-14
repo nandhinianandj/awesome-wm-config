@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Rescuetime applet
+TryExec=rescuetime
+Exec=rescuetime &
+Terminal=false
+Type=Application
+StartupNotify=true
+OnlyShowIn=awesome
