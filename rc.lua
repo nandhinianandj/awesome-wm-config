@@ -2176,8 +2176,6 @@ awful.key({ modkey, "Shift" }, "`", customization.func.client_toggle_titlebar),
 
 awful.key({ modkey, }, "l", customization.func.system_lock),
 
-awful.key({ modkey, }, "Home", customization.func.system_lock),
-
 awful.key({ modkey, }, "End", customization.func.system_suspend),
 
 awful.key({ modkey,  "Mod1" }, "Home", customization.func.system_hibernate),
