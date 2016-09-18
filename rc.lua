@@ -262,6 +262,38 @@ do
 end
 --]]
 
+-- Setup Conky
+do
+    local conky = nil
+
+    function get_conky(default)
+        if conky and conky.valid then
+            return conky
+        end
+
+        conky = awful.client.iterate(function(c) return c.class == "Conky" end)()
+        return conky or default
+    end
+
+    function raise_conky()
+        get_conky({}).ontop = true
+    end
+
+   function lower_conky()
+       get_conky({}).ontop = false
+   end
+   -- if  gears then
+   --     local t = gears.timer({ timeout = 0.01 })
+   --     t:connect_signal("timeout", function()
+   --         t:stop()
+   --         lower_conky()
+   --       end)
+   --     function lower_conky_delayed()
+   --         t:again()
+   --     end
+   -- end
+end--
+
 -- This is used later as the default terminal and editor to run.
 
 --{{
@@ -1549,46 +1581,6 @@ menu = mymainmenu })
 
 -- vicious widgets: http://awesome.naquadah.org/wiki/Vicious
 
-customization.widgets.cpuusage = awful.widget.graph()
-customization.widgets.cpuusage:set_width(50)
-customization.widgets.cpuusage:set_background_color("#494B4F")
-customization.widgets.cpuusage:set_color({
-  type = "linear", from = { 0, 0 }, to = { 10,0 },
-  stops = { {0, "#FF5656"}, {0.5, "#88A175"}, {1, "#AECF96" }}})
-vicious.register(customization.widgets.cpuusage, vicious.widgets.cpu, "$1", 5)
-do
-    local prog=tools.system.taskmanager
-    local started=false
-    customization.widgets.cpuusage:buttons(awful.util.table.join(
-    awful.button({ }, 1, function ()
-        if started then
-            awful.util.spawn("pkill -f '" .. prog .. "'")
-        else
-            awful.util.spawn(prog)
-        end
-        started=not started
-    end)
-    ))
-end
-
-customization.widgets.memusage = wibox.widget.textbox()
-vicious.register(customization.widgets.memusage, vicious.widgets.mem,
-  "<span fgcolor='yellow'>$1% ($2MB/$3MB)</span>", 3)
-do
-    local prog=tools.system.taskmanager
-    local started=false
-    customization.widgets.memusage:buttons(awful.util.table.join(
-    awful.button({ }, 1, function ()
-        if started then
-            awful.util.spawn("pkill -f '" .. prog .. "'")
-        else
-            awful.util.spawn(prog)
-        end
-        started=not started
-    end)
-    ))
-end
-
 customization.widgets.bat0 = awful.widget.progressbar()
 customization.widgets.bat0:set_width(8)
 customization.widgets.bat0:set_height(10)
@@ -1613,43 +1605,42 @@ do
     ))
 end
 
-customization.widgets.mpdstatus = wibox.widget.textbox()
-customization.widgets.mpdstatus:set_ellipsize("end")
-vicious.register(customization.widgets.mpdstatus, vicious.widgets.mpd,
-  function (mpdwidget, args)
-    local text = nil
-    local state = args["{state}"]
-    if state then
-      if state == "Stop" then
-        text = ""
-      else
-        text = args["{Artist}"]..' - '.. args["{Title}"]
-      end
-      return '<span fgcolor="light green"><b>[' .. state .. ']</b> <small>' .. text .. '</small></span>'
-    end
-    return ""
-  end, 1)
+-- customization.widgets.mpdstatus:set_ellipsize("end")
+-- vicious.register(customization.widgets.mpdstatus, vicious.widgets.mpd,
+--   function (mpdwidget, args)
+--     local text = nil
+--     local state = args["{state}"]
+--     if state then
+--       if state == "Stop" then
+--         text = ""
+--       else
+--         text = args["{Artist}"]..' - '.. args["{Title}"]
+--       end
+--       return '<span fgcolor="light green"><b>[' .. state .. ']</b> <small>' .. text .. '</small></span>'
+--     end
+--     return ""
+--   end, 1)
 -- http://git.sysphere.org/vicious/tree/README
-customization.widgets.mpdstatus = wibox.layout.constraint(customization.widgets.mpdstatus, "max", 180, nil)
-do
-    customization.widgets.mpdstatus:buttons(awful.util.table.join(
-    awful.button({ }, 1, function ()
-        awful.util.spawn("mpc toggle")
-    end),
-    awful.button({ }, 2, function ()
-        awful.util.spawn("mpc prev")
-    end),
-    awful.button({ }, 3, function ()
-        awful.util.spawn("mpc next")
-    end),
-    awful.button({ }, 4, function ()
-        awful.util.spawn("mpc seek -1%")
-    end),
-    awful.button({ }, 5, function ()
-        awful.util.spawn("mpc seek +1%")
-    end)
-    ))
-end
+-- customization.widgets.mpdstatus = wibox.layout.constraint(customization.widgets.mpdstatus, "max", 180, nil)
+-- do
+--     customization.widgets.mpdstatus:buttons(awful.util.table.join(
+--     awful.button({ }, 1, function ()
+--         awful.util.spawn("mpc toggle")
+--     end),
+--     awful.button({ }, 2, function ()
+--         awful.util.spawn("mpc prev")
+--     end),
+--     awful.button({ }, 3, function ()
+--         awful.util.spawn("mpc next")
+--     end),
+--     awful.button({ }, 4, function ()
+--         awful.util.spawn("mpc seek -1%")
+--     end),
+--     awful.button({ }, 5, function ()
+--         awful.util.spawn("mpc seek +1%")
+--     end)
+--     ))
+-- end
 
 customization.widgets.volume = wibox.widget.textbox()
 vicious.register(customization.widgets.volume, vicious.widgets.volume,
@@ -1708,7 +1699,8 @@ do
     end)
     ))
 end
-
+-- Conky wibox
+mystatusbar = awful.wibox({ position = "bottom", screen = 1, ontop = false, width = 1, height = 16 })
 -- Create a wibox for each screen and add it
 
 customization.widgets.uniarg = {}
@@ -1808,10 +1800,10 @@ for s = 1, screen.count() do
     -- Widgets that are aligned to the right
     local right_layout = wibox.layout.fixed.horizontal()
     if s == 1 then right_layout:add(wibox.widget.systray()) end
-    right_layout:add(customization.widgets.cpuusage)
-    right_layout:add(customization.widgets.memusage)
+    -- right_layout:add(customization.widgets.cpuusage)
+    -- right_layout:add(customization.widgets.memusage)
     right_layout:add(customization.widgets.bat0)
-    right_layout:add(customization.widgets.mpdstatus)
+    -- right_layout:add(customization.widgets.mpdstatus)
     --right_layout:add(customization.widgets.audio_volume)
     right_layout:add(customization.widgets.volume)
     right_layout:add(customization.widgets.date)
@@ -1972,7 +1964,7 @@ end),
 
 awful.key({ modkey, "Control" }, "r", awesome.restart),
 
-awful.key({ modkey, "Shift"   }, "q", awesome.quit),
+awful.key({ modkey, "Control"   }, "q", awesome.quit),
 
 awful.key({ modkey }, "\\", customization.func.systeminfo),
 
@@ -2321,74 +2313,10 @@ awful.key({ }, "XF86Sleep", function ()
 end),
 
 
+awful.key({}, "F11", function() raise_conky() end, function() lower_conky_delayed() end),
 awful.key({ modkey }, "XF86Sleep", function ()
     awful.util.spawn("systemctl hibernate")
-end),
-
---- hacks for Thinkpad W530 FN mal-function
-
-uniarg:key_repeat({ modkey }, "F10", function ()
-    awful.util.spawn("mpc prev")
-end),
-
-awful.key({ modkey }, "F11", function ()
-    awful.util.spawn("mpc toggle")
-end),
-
-uniarg:key_repeat({ modkey }, "F12", function ()
-    awful.util.spawn("mpc next")
-end),
-
-uniarg:key_repeat({ modkey, "Control" }, "Left", function ()
-    awful.util.spawn("mpc prev")
-end),
-
-awful.key({ modkey, "Control" }, "Down", function ()
-    awful.util.spawn("mpc toggle")
-end),
-
-uniarg:key_repeat({ modkey, "Control" }, "Right", function ()
-    awful.util.spawn("mpc next")
-end),
-
-awful.key({ modkey, "Control" }, "Up", function ()
-    awful.util.spawn("gnome-alsamixer")
-end),
-
-uniarg:key_numarg({ modkey, "Shift" }, "Left",
-function ()
-  awful.util.spawn("mpc seek -1%")
-end,
-function (n)
-  awful.util.spawn("mpc seek -" .. n .. "%")
-end),
-
-uniarg:key_numarg({ modkey, "Shift" }, "Right",
-function ()
-  awful.util.spawn("mpc seek +1%")
-end,
-function (n)
-  awful.util.spawn("mpc seek +" .. n .. "%")
-end),
-
-uniarg:key_numarg({ modkey, "Shift" }, "Down",
-function ()
-  awful.util.spawn("mpc seek -10%")
-end,
-function (n)
-  awful.util.spawn("mpc seek -" .. n .. "%")
-end),
-
-uniarg:key_numarg({ modkey, "Shift" }, "Up",
-function ()
-  awful.util.spawn("mpc seek +10%")
-end,
-function (n)
-  awful.util.spawn("mpc seek +" .. n .. "%")
-end),
-
-nil
-
+end)
 )
 
 -- client management
@@ -2692,6 +2620,7 @@ awful.rules.rules = {
     {
         rule = { class = "Conky" },
         properties = {
+	    floating = true,
             sticky = true,
             opacity = 0.4,
             focusable = false,
