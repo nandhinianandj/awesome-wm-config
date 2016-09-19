@@ -1700,7 +1700,6 @@ do
     ))
 end
 -- Conky wibox
-mystatusbar = awful.wibox({ position = "bottom", screen = 1, ontop = false, width = 1, height = 16 })
 -- Create a wibox for each screen and add it
 
 customization.widgets.uniarg = {}
