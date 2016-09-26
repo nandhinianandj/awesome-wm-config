@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Redshift
+TryExec=redshift &
+Exec=redshift &
+Terminal=false
+Type=Application
+StartupNotify=true
+OnlyShowIn=awesome
