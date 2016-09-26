@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=Litecoin
+Exec=/home/anandj/Downloads/litecoin-0.10.4.0/bin/litecoin-qt -min
+Terminal=false
+Hidden=false
