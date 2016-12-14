@@ -2061,7 +2061,7 @@ awful.key({ modkey, }, "x", function() mymainmenu:toggle({keygrabber=true}) end)
 
 awful.key({ modkey, }, "X", function() mymainmenu:toggle({keygrabber=true}) end),
 
-uniarg:key_repeat({ modkey,           }, "Return", function () awful.util.spawn(tools.terminal) end),
+awful.key({ modkey,           }, "Return", function () awful.util.spawn(tools.terminal) end),
 uniarg:key_repeat({ modkey, "Shift"   }, "Return", function () awful.util.spawn(tools.terminal) end, 3),
 
 uniarg:key_repeat({ modkey, "Mod1" }, "Return", function () awful.util.spawn("gksudo " .. tools.terminal) end),
