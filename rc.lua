@@ -7,6 +7,8 @@ package.path = config_path .. "/modules/?/init.lua;" .. package.path
 
 local math = require("math")
 local gears = require("gears")
+local pomodoro = require("pomodoro")
+
 -- local scratch = require("scratch")
 awful.client = require("awful.client")
 awful.screen = require("awful.screen")
@@ -47,6 +49,8 @@ awful.menu.menu_keys.back = { "Left", "[", "{", "-", "_", }
 awful.menu.menu_keys.exec = { "Return", "Space", }
 awful.menu.menu_keys.close = { "Escape", "BackSpace", }
 
+-- init pomodoro
+pomodoro.init()
 -- customization
 
 
@@ -1579,6 +1583,7 @@ menu = mymainmenu })
 --customization.widgets.textclock = wibox.widget.textbox()
 --bashets.register("date.sh", {widget=customization.widgets.textclock, update_time=1, format="$1 <span fgcolor='red'>$2</span> <small>$3$4</small> <b>$5<small>$6</small></b>"}) -- http://awesome.naquadah.org/wiki/Bashets
 
+customization.widgets.pomodoro = pomodoro.widget
 -- vicious widgets: http://awesome.naquadah.org/wiki/Vicious
 
 customization.widgets.bat0 = awful.widget.progressbar()
@@ -1798,6 +1803,7 @@ for s = 1, screen.count() do
 
     -- Widgets that are aligned to the right
     local right_layout = wibox.layout.fixed.horizontal()
+    right_layout.add(customization.widgets.pomodoro)
     if s == 1 then right_layout:add(wibox.widget.systray()) end
     -- right_layout:add(customization.widgets.cpuusage)
     -- right_layout:add(customization.widgets.memusage)
