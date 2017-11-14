@@ -10,6 +10,7 @@ package.path = config_path .. "/?/init.lua;" .. package.path
 package.path = config_path .. "/modules/?.lua;" .. package.path
 package.path = config_path .. "/modules/?/init.lua;" .. package.path
 
+local vicious = require("vicious")
 local wibox = require("wibox")
 -- Theme handling library
 local beautiful = require("beautiful")
@@ -23,7 +24,7 @@ local names = { "Mail", "Browser", "Terminal", "IM", "Miscellaneous"}
 local l = awful.layout.suit  -- Just to save some typing: use an alias.
 local layouts = { l.floating, l.tile, l.floating, l.fair, l.max,
     l.floating, l.tile.left, l.floating, l.floating }
-    awful.tag(names, s, layouts)
+awful.tag(names, s, layouts)
 
 local cachedir = awful.util.getdir("cache")
 local awesome_tags_fname = cachedir .. "/awesome-tags"
@@ -65,7 +66,7 @@ terminal = "lxterminal"
 -- This is used later as the default terminal and editor to run.
 editor = os.getenv("EDITOR") or "editor"
 editor_cmd = terminal .. " -e " .. editor
-
+-- bosch specific stuff
 -- Default modkey.
 -- Usually, Mod4 is the key with a logo between Control and Alt.
 -- If you do not like this or do not have such a key,
@@ -191,6 +192,53 @@ local function set_wallpaper(s)
     end
 end
 
+
+-- Memory widget
+-- memicon = wibox.widget.imagebox()
+-- memicon.image = image(beautiful.widget_mem)
+memwidget = wibox.widget.textbox()
+vicious.cache(vicious.widgets.mem)
+vicious.register(memwidget, vicious.widgets.mem, "$1 ($2MB/$3MB)", 13)
+
+-- Battery widget
+    batwidget = wibox.widget.progressbar()
+
+    -- Create wibox with batwidget
+    batbox = wibox.widget {
+      {
+        max_value     = 1,
+        widget        = batwidget,
+        border_width  = 0.5,
+        border_color  = "#000000",
+        color         = {
+          type = "linear",
+          from = { 0, 0 },
+          to = { 0, 30 },
+          stops = {
+            { 0, "#AECF96" },
+            { 1, "#FF5656" }
+          }
+       }
+      },
+      forced_height = 10,
+      forced_width  = 8,
+      direction     = 'east',
+      color         = beautiful.fg_widget,
+      layout        = wibox.container.rotate,
+    }
+    batbox = wibox.layout.margin(batbox, 1, 1, 3, 3)
+    -- Register battery widget
+    vicious.register(batwidget, vicious.widgets.bat, "$2", 61, "BAT0")
+
+    cpuwidget = awful.widget.graph()
+    cpuwidget:set_width(50)
+    cpuwidget:set_background_color("#494B4F")
+    cpuwidget:set_color({ type = "linear", from = { 0, 0 }, to = { 50, 0 },
+      stops = { { 0, "#FF5656" }, { 0.5, "#88A175" }, { 1, "#AECF96" }}})
+    vicious.register(cpuwidget, vicious.widgets.cpu, "$1", 3)
+
+
+
 --- Customization
 customization = {}
 customization.config = {}
@@ -268,7 +316,8 @@ awful.screen.connect_for_each_screen(function(s)
         s.mytasklist, -- Middle widget
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
-            mykeyboardlayout,
+	           memwidget,
+				        cpuwidget,
             wibox.widget.systray(),
             mytextclock,
             s.mylayoutbox,
@@ -329,14 +378,13 @@ local tools = {
     editor = {
     },
 }
+tools.browser.primary = os.getenv("BROWSER") or "firefox"
+tools.editor.primary = os.getenv("EDITOR") or "vim"
+
 -- This is used later as the default terminal and editor to run.
 switchUserCmd="/usr/bin/dm-tool switch-to-user "
 screenshot = "scrot -z " .. os.getenv("HOME") .. "/Shots/%Y-%m-%d-%h-%s_$wx$h.png"
 
-tools.browser.primary = os.getenv("BROWSER") or "firefox"
-tools.browser.secondary = ({chromium="firefox", firefox="chromium"})[tools.browser.primary]
-
-tools.editor.primary = os.getenv("EDITOR") or "gvim"
 local myapp = nil
 do
     local function build(arg)
