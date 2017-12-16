@@ -491,6 +491,8 @@ globalkeys = awful.util.table.join(
               {description = "select next", group = "layout"}),
     awful.key({ modkey, "Shift"   }, "space", function () awful.layout.inc(-1) end,
               {description = "select previous", group = "layout"}),
+-- Standard program
+		 awful.key({modkey}, "l", function () awful.util.spawn("xscreensaver-command -lock") end),
 
     awful.key({ modkey, "Control" }, "n",
               function ()
@@ -746,5 +748,5 @@ awful.util.spawn("rescuetime &")
 awful.util.spawn("nm-applet &")
 awful.util.spawn("dropbox start &")
 awful.util.spawn("$HOME/Downloads/firefox/firefox")
-
+awful.util.spawn("xscreensaver -no-splash")
 
