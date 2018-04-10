@@ -744,9 +744,11 @@ client.connect_signal("focus", function(c) c.border_color = beautiful.border_foc
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 
 -- autostart dropbox, rescuetime, network manager etc..
-awful.util.spawn("rescuetime &")
+awful.util.spawn("nohup rescuetime &")
+awful.util.spawn("nohup slack &")
+awful.util.spawn("nohup thunderbird &")
 awful.util.spawn("nm-applet &")
 awful.util.spawn("dropbox start &")
-awful.util.spawn("$HOME/Downloads/firefox/firefox")
+--awful.util.spawn("$HOME/Downloads/firefox/firefox")
 awful.util.spawn("xscreensaver -no-splash")
 
