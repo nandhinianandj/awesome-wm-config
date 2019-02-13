@@ -10,6 +10,7 @@ local awful = require("awful")
 theme = {}
 theme.name = "zenburn"
 theme.confdir       = awful.util.getdir("config") .. "/themes/" .. theme.name
+theme.wallpaper = "~/.config/awesome/150802225957-ronda-rousey-vs-bethe-correia-full-169.jpg"
 -- theme.wallpaper_cmd = { "feh --bg-fill " .. theme.confdir .. "/background" }
 -- }}}
 
