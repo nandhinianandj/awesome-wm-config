@@ -616,7 +616,7 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 -- autostart dropbox, rescuetime, network manager etc..
 awful.util.spawn("nohup rescuetime &")
 awful.util.spawn("nohup skype &")
-awful.util.spawn("nohup zoom &")
+-- awful.util.spawn("nohup zoom &")
 awful.util.spawn("nohup slack &")
 -- awful.util.spawn("nohup thunderbird &")
 awful.util.spawn("nm-applet &")
