@@ -614,12 +614,15 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 -- }}}
 
 -- autostart dropbox, rescuetime, network manager etc..
+-- Communications and time management.
 awful.util.spawn("nohup rescuetime &")
 awful.util.spawn("nohup skype &")
--- awful.util.spawn("nohup zoom &")
+awful.util.spawn("nohup gitter &")
 awful.util.spawn("nohup slack &")
+-- awful.util.spawn("nohup zoom &")
 -- awful.util.spawn("nohup thunderbird &")
+--  System utilities
+awful.util.spawn("eval $(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg) &")
 awful.util.spawn("nm-applet &")
 awful.util.spawn("dropbox start &")
 awful.util.spawn("xscreensaver -no-splash")
-awful.util.spawn("eval $(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg) &")
