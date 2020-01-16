@@ -617,8 +617,8 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 -- Communications and time management.
 awful.util.spawn("nohup rescuetime &")
 awful.util.spawn("nohup skypeforlinux &")
-awful.util.spawn("nohup gitter &")
-awful.util.spawn("nohup slack &")
+--awful.util.spawn("nohup gitter &")
+--awful.util.spawn("nohup slack &")
 -- awful.util.spawn("nohup zoom &")
 -- awful.util.spawn("nohup thunderbird &")
 --  System utilities
