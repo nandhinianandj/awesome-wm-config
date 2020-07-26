@@ -51,7 +51,7 @@ for s = 1, screen.count() do
 	gears.wallpaper.maximized(beautiful.wallpaper, s, true)
 end
 
-local names = { "Mail", "Browser", "Terminal", "IM", "Miscellaneous"}
+local names = { "1", "Browser", "Terminal", "IM", "Miscellaneous"}
 local cachedir = awful.util.getdir("cache")
 local awesome_tags_fname = cachedir .. "/awesome-tags"
 local awesome_autostart_once_fname = cachedir .. "/awesome-autostart-once-" .. os.getenv("XDG_SESSION_ID")
@@ -616,11 +616,11 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 -- autostart dropbox, rescuetime, network manager etc..
 -- Communications and time management.
 awful.util.spawn("nohup rescuetime &")
---awful.util.spawn("nohup skypeforlinux &")
---awful.util.spawn("nohup gitter &")
---awful.util.spawn("nohup slack &")
+awful.util.spawn("nohup skypeforlinux &")
+awful.util.spawn("nohup gitter &")
+awful.util.spawn("nohup slack &")
 -- awful.util.spawn("nohup zoom &")
--- awful.util.spawn("nohup thunderbird &")
+awful.util.spawn("nohup thunderbird &")
 --  System utilities
 awful.util.spawn("eval $(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg) &")
 awful.util.spawn("nm-applet &")
