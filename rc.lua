@@ -539,6 +539,11 @@ awful.rules.rules = {
     -- Set Firefox to always map on the tag named "2" on screen 1.
     -- { rule = { class = "Firefox" },
     --   properties = { screen = 1, tag = "2" } },
+     { rule_any = { class = { "Chromium-browser", "Firefox", "Opera", "Brave" } },
+      properties = { tag = "Browser" } },
+
+     { rule_any = { class = { "Signal", "Slack", "Teams", "Telegram", "Discord" } },
+      properties = { tag = "IM" } },
 }
 -- }}}
 
@@ -613,7 +618,10 @@ client.connect_signal("focus", function(c) c.border_color = beautiful.border_foc
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
 
+awful.util.spawn("eval $(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg) &")
 -- autostart dropbox, rescuetime, network manager etc..
+awful.util.spawn("nm-applet &")
+awful.util.spawn("dropbox start &")
 -- Communications and time management.
 awful.util.spawn("nohup rescuetime &")
 -- awful.util.spawn("nohup skypeforlinux &")
@@ -621,11 +629,8 @@ awful.util.spawn("nohup rescuetime &")
 -- awful.util.spawn("nohup slack &")
 -- awful.util.spawn("nohup zoom &")
 --  System utilities
-awful.util.spawn("eval $(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg) &")
-awful.util.spawn("nm-applet &")
-awful.util.spawn("dropbox start &")
 --awful.util.spawn("nohup spotify &")
---awful.util.spawn("onedrive --monitor --confdir='~/.config/onedrivePersonal'")
---awful.util.spawn("onedrive --monitor --confdir='~/.config/onedriveHitachi'")
---awful.util.spawn("onedrive --monitor --confdir='~/.config/onedriveNissan'")
+awful.util.spawn("nohup discord &")
+awful.util.spawn("nohup telegram-desktop &")
+awful.util.spawn("nohup signal-desktop &")
 awful.util.spawn("xscreensaver &")
