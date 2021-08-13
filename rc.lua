@@ -57,7 +57,7 @@ local awesome_tags_fname = cachedir .. "/awesome-tags"
 local awesome_autostart_once_fname = cachedir .. "/awesome-autostart-once-" .. os.getenv("XDG_SESSION_ID")
 local awesome_client_tags_fname = cachedir .. "/awesome-client-tags-" .. os.getenv("XDG_SESSION_ID")
 -- This is used later as the default terminal and editor to run.
-terminal = "xterm"
+terminal = "lxterminal"
 editor = os.getenv("EDITOR") or "editor"
 editor_cmd = terminal .. " -e " .. editor
 
@@ -293,7 +293,13 @@ globalkeys = gears.table.join(
               {description = "view next", group = "tag"}),
     awful.key({ modkey,           }, "Escape", awful.tag.history.restore,
               {description = "go back", group = "tag"}),
-
+    -- Toggle microphone state
+    awful.key({ modkey, "Shift" }, "m",
+          function ()
+              beautiful.mic:toggle()
+          end,
+          {description = "Toggle microphone (amixer)", group = "Hotkeys"}
+    ),
     awful.key({ modkey,           }, "j",
         function ()
             awful.client.focus.byidx( 1)
@@ -365,7 +371,7 @@ globalkeys = gears.table.join(
               end,
               {description = "restore minimized", group = "client"}),
     -- Lock Screen
-    awful.key({ modkey },  	"l",  function () awful.spawn("xscreensaver-command -lock") end,
+    awful.key({ modkey },  	"l",  function () awful.spawn("slock") end,
     		{description="lock screen", group="layout"}),
     -- Prompt
     awful.key({ modkey },            "r",     function () awful.screen.focused().mypromptbox:run() end,
@@ -614,8 +620,8 @@ client.connect_signal("mouse::enter", function(c)
     end
 end)
 
-client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
-client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
+--client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
+--client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
 
 awful.util.spawn("eval $(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg) &")
@@ -624,13 +630,14 @@ awful.util.spawn("nm-applet &")
 awful.util.spawn("dropbox start &")
 -- Communications and time management.
 awful.util.spawn("nohup rescuetime &")
+awful.util.spawn("nohup signal-desktop &")
+awful.util.spawn("nohup teams &")
 -- awful.util.spawn("nohup skypeforlinux &")
 -- awful.util.spawn("nohup gitter &")
 -- awful.util.spawn("nohup slack &")
 -- awful.util.spawn("nohup zoom &")
 --  System utilities
 --awful.util.spawn("nohup spotify &")
-awful.util.spawn("nohup discord &")
-awful.util.spawn("nohup telegram-desktop &")
-awful.util.spawn("nohup signal-desktop &")
-awful.util.spawn("xscreensaver &")
+-- awful.util.spawn("nohup discord &")
+-- awful.util.spawn("nohup telegram-desktop &")
+-- awful.util.spawn("xscreensaver &")
