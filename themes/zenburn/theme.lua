@@ -10,7 +10,7 @@ local awful = require("awful")
 theme = {}
 theme.name = "zenburn"
 theme.confdir       = awful.util.getdir("config") .. "/themes/" .. theme.name
-theme.wallpaper = "~/.config/awesome/150802225957-ronda-rousey-vs-bethe-correia-full-169.jpg"
+theme.wallpaper = "~/.config/awesome/wallpaper/SFW/A-kid-needs-at-least-one-person-who-never-gives-up-on-them-no-matter-what.jpg"
 -- theme.wallpaper_cmd = { "feh --bg-fill " .. theme.confdir .. "/background" }
 -- }}}
 
@@ -60,6 +60,23 @@ theme.fg_netdn_widget  = theme.fg_urgent
 theme.bg_widget        = theme.bg_normal
 theme.border_widget    = theme.bg_normal
 -- }}}
+
+local widgets = {
+    mic = require("widgets/mic"),
+}
+
+theme.mic = widgets.mic({
+    timeout = 10,
+    settings = function(self)
+        if self.state == "muted" then
+            self.widget:set_image(theme.widget_micMuted)
+        else
+            self.widget:set_image(theme.widget_micUnmuted)
+        end
+    end
+})
+local widget_mic = wibox.widget { theme.mic.widget, layout = wibox.layout.align.horizontal }
+
 
 -- {{{ Mouse finder
 theme.mouse_finder_color = theme.fg_urgent

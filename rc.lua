@@ -293,7 +293,13 @@ globalkeys = gears.table.join(
               {description = "view next", group = "tag"}),
     awful.key({ modkey,           }, "Escape", awful.tag.history.restore,
               {description = "go back", group = "tag"}),
-
+    -- Toggle microphone state
+    awful.key({ modkey, "Shift" }, "m",
+          function ()
+              beautiful.mic:toggle()
+          end,
+          {description = "Toggle microphone (amixer)", group = "Hotkeys"}
+    ),
     awful.key({ modkey,           }, "j",
         function ()
             awful.client.focus.byidx( 1)
@@ -365,7 +371,7 @@ globalkeys = gears.table.join(
               end,
               {description = "restore minimized", group = "client"}),
     -- Lock Screen
-    awful.key({ modkey },  	"l",  function () awful.spawn("xscreensaver-command -lock") end,
+    awful.key({ modkey },  	"l",  function () awful.spawn("slock") end,
     		{description="lock screen", group="layout"}),
     -- Prompt
     awful.key({ modkey },            "r",     function () awful.screen.focused().mypromptbox:run() end,
@@ -539,13 +545,14 @@ awful.rules.rules = {
     -- Set Firefox to always map on the tag named "2" on screen 1.
     -- { rule = { class = "Firefox" },
     --   properties = { screen = 1, tag = "2" } },
-     { rule_any = { class = { "Chromium-browser", "Firefox", "Opera", "Brave" } },
+     { rule_any = { class = { "firefox", "Chromium-browser", "Firefox", "Opera", "Brave" } },
       properties = { tag = "Browser" } },
 
-     { rule_any = { class = { "xterm", "lxterminal", "mate-terminal"} },
+     { rule_any = { class = { "xterm", "gnome-terminal", "lxterminal", "mate-terminal"} },
       properties = { tag = "Terminal" } },
 
       { rule_any = { class = { "Signal", "Slack", "Teams", "Telegram", "Discord" } },
+
       properties = { tag = "IM" } },
 }
 -- }}}
@@ -617,8 +624,8 @@ client.connect_signal("mouse::enter", function(c)
     end
 end)
 
-client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
-client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
+--client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
+--client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
 
 awful.util.spawn("eval $(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg) &")
@@ -627,13 +634,14 @@ awful.util.spawn("nm-applet &")
 awful.util.spawn("dropbox start &")
 -- Communications and time management.
 awful.util.spawn("nohup rescuetime &")
+-- awful.util.spawn("nohup signal-desktop &")
+awful.util.spawn("nohup teams &")
 -- awful.util.spawn("nohup skypeforlinux &")
 -- awful.util.spawn("nohup gitter &")
 -- awful.util.spawn("nohup slack &")
 -- awful.util.spawn("nohup zoom &")
 --  System utilities
 --awful.util.spawn("nohup spotify &")
-awful.util.spawn("nohup discord &")
-awful.util.spawn("nohup telegram-desktop &")
-awful.util.spawn("nohup signal-desktop &")
-awful.util.spawn("xscreensaver &")
+-- awful.util.spawn("nohup discord &")
+-- awful.util.spawn("nohup telegram-desktop &")
+-- awful.util.spawn("xscreensaver &")
