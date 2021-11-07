@@ -634,14 +634,16 @@ awful.util.spawn("nm-applet &")
 awful.util.spawn("dropbox start &")
 -- Communications and time management.
 awful.util.spawn("nohup rescuetime &")
--- awful.util.spawn("nohup signal-desktop &")
-awful.util.spawn("nohup teams &")
+-- music
+awful.util.spawn("nohup spotify &")
+-- Comms
+-- awful.util.spawn("nohup teams &")
 -- awful.util.spawn("nohup skypeforlinux &")
 -- awful.util.spawn("nohup gitter &")
 -- awful.util.spawn("nohup slack &")
 -- awful.util.spawn("nohup zoom &")
---  System utilities
---awful.util.spawn("nohup spotify &")
 -- awful.util.spawn("nohup discord &")
--- awful.util.spawn("nohup telegram-desktop &")
+-- awful.util.spawn("nohup teams &")
+awful.util.spawn("nohup signal-desktop &")
+awful.util.spawn("nohup telegram-desktop &")
 -- awful.util.spawn("xscreensaver &")
