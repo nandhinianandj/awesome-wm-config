@@ -46,10 +46,51 @@ end
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
 --beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
-beautiful.init("~/.config/awesome/themes/zenburn/theme.lua")
-for s = 1, screen.count() do
-	gears.wallpaper.maximized(beautiful.wallpaper, s, true)
+-- scan directory, and optionally filter outputs
+function scandir(directory, filter)
+    local i, t, popen = 0, {}, io.popen
+    if not filter then
+        filter = function(s) return true end
+    end
+    for filename in popen('ls -a "'..directory..'"'):lines() do
+        if filter(filename) then
+            i = i + 1
+            t[i] = filename
+        end
+    end
+    return t
 end
+
+-- }}}
+beautiful.init("/home/nandhini/.config/awesome/themes/zenburn/theme.lua")
+-- configuration - edit to your liking
+wp_index = 1
+wp_timeout  = 100
+wp_path = "/home/nandhini/.config/awesome/wallpaper/SFW"
+wp_files = scandir(wp_path)
+print(wp_files)
+-- setup the timer
+wp_timer = timer { timeout = wp_timeout }
+wp_timer:connect_signal("timeout", function()
+
+  -- set wallpaper to current index for all screens
+  for s = 1, screen.count() do
+    gears.wallpaper.maximized(wp_path .. '/' .. wp_files[wp_index], s, true)
+  end
+
+  -- stop the timer (we don't need multiple instances running at the same time)
+  wp_timer:stop()
+
+  -- get next random index
+  wp_index = math.random( 1, #wp_files)
+
+  --restart the timer
+  wp_timer.timeout = wp_timeout
+  wp_timer:start()
+end)
+
+-- initial start when rc.lua is first run
+wp_timer:start()
 
 local names = { "1", "Browser", "Terminal", "IM", "Miscellaneous"}
 local cachedir = awful.util.getdir("cache")
@@ -649,3 +690,5 @@ awful.util.spawn("nohup discord &")
 -- awful.util.spawn("nohup teams &")
 -- awful.util.spawn("nohup telegram-desktop &")
 -- awful.util.spawn("xscreensaver &")
+awful.util.spawn("sudo /home/nandhini/playspace/get-shit-done/get-shit-done.py work;")
+-- awful.util.spawn("feh --bg-scale ~/.config/awesome/wallpaper/The-real-violence-the-violence-that-I-realized-was-unforgivable-is-the-violence-that-we-do-to-ourselves-when-were-too-afraid-to-be-who-we-really-are.jpg;")
