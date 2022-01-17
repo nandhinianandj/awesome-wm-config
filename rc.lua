@@ -65,7 +65,7 @@ end
 beautiful.init("/home/nandhini/.config/awesome/themes/zenburn/theme.lua")
 -- configuration - edit to your liking
 wp_index = 1
-wp_timeout  = 100
+wp_timeout  = 300
 wp_path = "/home/nandhini/.config/awesome/wallpaper/SFW"
 wp_files = scandir(wp_path)
 print(wp_files)
@@ -686,7 +686,7 @@ awful.util.spawn("nohup redshift &")
 -- awful.util.spawn("nohup gitter &")
 -- awful.util.spawn("nohup slack &")
 -- awful.util.spawn("nohup zoom &")
-awful.util.spawn("nohup discord &")
+-- awful.util.spawn("nohup discord &")
 -- awful.util.spawn("nohup teams &")
 -- awful.util.spawn("nohup telegram-desktop &")
 -- awful.util.spawn("xscreensaver &")
