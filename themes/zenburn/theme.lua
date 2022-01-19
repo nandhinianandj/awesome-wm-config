@@ -10,7 +10,7 @@ local awful = require("awful")
 theme = {}
 theme.name = "zenburn"
 theme.confdir       = awful.util.getdir("config") .. "/themes/" .. theme.name
-theme.wallpaper = "/home/nandhini/.config/awesome/wallpaper/SFW/A-kid-needs-at-least-one-person-who-never-gives-up-on-them-no-matter-what.jpg"
+theme.wallpaper = string.format("%s/.config/awesome/wallpaper/SFW/A-kid-needs-at-least-one-person-who-never-gives-up-on-them-no-matter-what.jpg", os.getenv("HOME"))
 -- theme.wallpaper_cmd = { "feh --bg-fill " .. theme.confdir .. "/background" }
 -- }}}
 

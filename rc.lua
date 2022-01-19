@@ -62,11 +62,12 @@ function scandir(directory, filter)
 end
 
 -- }}}
-beautiful.init("/home/nandhini/.config/awesome/themes/zenburn/theme.lua")
+local theme_path = string.format("%s/.config/awesome/themes/%s/theme.lua", os.getenv("HOME"), "zenburn")
+beautiful.init(theme_path)
 -- configuration - edit to your liking
 wp_index = 1
 wp_timeout  = 300
-wp_path = "/home/nandhini/.config/awesome/wallpaper/SFW"
+wp_path = string.format("%s/.config/awesome/wallpaper/SFW", os.getenv("HOME"))
 wp_files = scandir(wp_path)
 print(wp_files)
 -- setup the timer
@@ -675,7 +676,7 @@ awful.util.spawn("nm-applet &")
 awful.util.spawn("dropbox start &")
 -- Communications and time management.
 awful.util.spawn("nohup rescuetime &")
-awful.util.spawn("nohup signal-desktop &")
+--awful.util.spawn("nohup signal-desktop &")
 -- music
 awful.util.spawn("nohup spotify &")
 -- redshift
@@ -690,5 +691,5 @@ awful.util.spawn("nohup redshift &")
 -- awful.util.spawn("nohup teams &")
 -- awful.util.spawn("nohup telegram-desktop &")
 -- awful.util.spawn("xscreensaver &")
-awful.util.spawn("sudo /home/nandhini/playspace/get-shit-done/get-shit-done.py work;")
+awful.util.spawn("sudo " .. string.format("%s/playspace/get-shit-done/get-shit-done.py work;", os.getenv("HOME")))
 -- awful.util.spawn("feh --bg-scale ~/.config/awesome/wallpaper/The-real-violence-the-violence-that-I-realized-was-unforgivable-is-the-violence-that-we-do-to-ourselves-when-were-too-afraid-to-be-who-we-really-are.jpg;")
