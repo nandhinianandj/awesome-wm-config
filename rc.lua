@@ -62,11 +62,12 @@ function scandir(directory, filter)
 end
 
 -- }}}
-beautiful.init("/home/nandhini/.config/awesome/themes/zenburn/theme.lua")
+local theme_path = string.format("%s/.config/awesome/themes/%s/theme.lua", os.getenv("HOME"), "zenburn")
+beautiful.init(theme_path)
 -- configuration - edit to your liking
 wp_index = 1
 wp_timeout  = 300
-wp_path = "/home/nandhini/.config/awesome/wallpaper/SFW"
+wp_path = string.format("%s/.config/awesome/wallpaper/SFW", os.getenv("HOME"))
 wp_files = scandir(wp_path)
 print(wp_files)
 -- setup the timer
@@ -600,20 +601,20 @@ awful.rules.rules = {
 
 -- {{{ Signals
 -- Signal function to execute when a new client appears.
-client.connect_signal("manage", function (c)
-    -- Set the windows at the slave,
-    -- i.e. put it at the end of others instead of setting it master.
-    -- if not awesome.startup then awful.client.setslave(c) end
-
-    if awesome.startup and
-      not c.size_hints.user_position
-      and not c.size_hints.program_position then
-        -- Prevent clients from being unreachable after screen count changes.
-	awful.client.movetoscreen(c, client.focus.screen)
-	awful.client.movetoscreen(c, client.focus.screen)
-        awful.placement.no_offscreen(c)
-    end
-end)
+-- client.connect_signal("manage", function (c)
+--     -- Set the windows at the slave,
+--     -- i.e. put it at the end of others instead of setting it master.
+--     -- if not awesome.startup then awful.client.setslave(c) end
+--
+--     if awesome.startup and
+--       not c.size_hints.user_position
+--       and not c.size_hints.program_position then
+--         -- Prevent clients from being unreachable after screen count changes.
+-- 	awful.client.movetoscreen(c, client.focus.screen)
+-- 	awful.client.movetoscreen(c, client.focus.screen)
+--         awful.placement.no_offscreen(c)
+--     end
+-- end)
 
 -- Add a titlebar if titlebars_enabled is set to true in the rules.
 client.connect_signal("request::titlebars", function(c)
@@ -675,6 +676,7 @@ awful.util.spawn("nm-applet &")
 awful.util.spawn("dropbox start &")
 -- Communications and time management.
 awful.util.spawn("nohup rescuetime &")
+--awful.util.spawn("nohup signal-desktop &")
 -- music
 awful.util.spawn("nohup spotify &")
 -- redshift
@@ -690,5 +692,5 @@ awful.util.spawn("nohup redshift &")
 -- awful.util.spawn("nohup teams &")
 -- awful.util.spawn("nohup telegram-desktop &")
 -- awful.util.spawn("xscreensaver &")
-awful.util.spawn("sudo /home/nandhini/playspace/get-shit-done/get-shit-done.py work;")
+awful.util.spawn("sudo " .. string.format("%s/playspace/get-shit-done/get-shit-done.py work;", os.getenv("HOME")))
 -- awful.util.spawn("feh --bg-scale ~/.config/awesome/wallpaper/The-real-violence-the-violence-that-I-realized-was-unforgivable-is-the-violence-that-we-do-to-ourselves-when-were-too-afraid-to-be-who-we-really-are.jpg;")
