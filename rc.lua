@@ -675,12 +675,12 @@ awful.util.spawn("nm-applet &")
 awful.util.spawn("dropbox start &")
 -- Communications and time management.
 awful.util.spawn("nohup rescuetime &")
-awful.util.spawn("nohup signal-desktop &")
 -- music
 awful.util.spawn("nohup spotify &")
 -- redshift
 awful.util.spawn("nohup redshift &")
 
+--awful.util.spawn("nohup signal-desktop &")
 -- awful.util.spawn("nohup teams &")
 -- awful.util.spawn("nohup skypeforlinux &")
 -- awful.util.spawn("nohup gitter &")
