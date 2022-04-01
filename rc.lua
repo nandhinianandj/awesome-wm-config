@@ -69,14 +69,16 @@ wp_index = 1
 wp_timeout  = 300
 wp_path = string.format("%s/.config/awesome/wallpaper/SFW", os.getenv("HOME"))
 wp_files = scandir(wp_path)
-print(wp_files)
+
 -- setup the timer
 wp_timer = timer { timeout = wp_timeout }
 wp_timer:connect_signal("timeout", function()
 
+  nomi_wp = "The-real-violence-the-violence-that-I-realized-was-unforgivable-is-the-violence-that-we-do-to-ourselves-when-were-too-afraid-to-be-who-we-really-are.jpg;"
   -- set wallpaper to current index for all screens
   for s = 1, screen.count() do
-    gears.wallpaper.maximized(wp_path .. '/' .. wp_files[wp_index], s, true)
+    -- gears.wallpaper.maximized(wp_path .. '/' .. wp_files[wp_index], s, true)
+    gears.wallpaper.maximized(wp_path .. '/' .. nomi_wp, s, true)
   end
 
   -- stop the timer (we don't need multiple instances running at the same time)
@@ -93,6 +95,43 @@ end)
 -- initial start when rc.lua is first run
 wp_timer:start()
 
+-- Setup Volume control
+-- cardid  = 3
+-- channel = "Master"
+-- function volume (mode, widget)
+-- 	if mode == "update" then
+--              local fd = io.popen("amixer -c " .. cardid .. " -- sget " .. channel)
+--              local status = fd:read("*all")
+--              fd:close()
+--
+-- 		local volume = string.match(status, "(%d?%d?%d)%%")
+-- 		volume = string.format("% 3d", volume)
+--
+-- 		status = string.match(status, "%[(o[^%]]*)%]")
+--
+-- 		if string.find(status, "on", 1, true) then
+-- 			volume = volume .. "%"
+-- 		else
+-- 			volume = volume .. "M"
+-- 		end
+-- 		widget.text = volume
+-- 	elseif mode == "up" then
+-- 		io.popen("amixer -q -c " .. cardid .. " sset " .. channel .. " 5%+"):read("*all")
+-- 		volume("update", widget)
+-- 	elseif mode == "down" then
+-- 		io.popen("amixer -q -c " .. cardid .. " sset " .. channel .. " 5%-"):read("*all")
+-- 		volume("update", widget)
+-- 	else
+-- 		io.popen("amixer -c " .. cardid .. " sset " .. channel .. " toggle"):read("*all")
+-- 		volume("update", widget)
+-- 	end
+-- end
+-- -- make sure volume level is reflected in the widget
+-- vol_timer = timer {timeout = 10}
+-- vol_timer:connect_signal("timeout", function() volume("update", tb_volume) end)
+-- vol_timer:start()
+
+--- Variables
 local names = { "1", "Browser", "Terminal", "IM", "Miscellaneous"}
 local cachedir = awful.util.getdir("cache")
 local awesome_tags_fname = cachedir .. "/awesome-tags"
@@ -183,10 +222,19 @@ mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
 menubar.utils.terminal = terminal -- Set the terminal for applications that require it
 -- }}}
 
+-- Volume control widget
+
+tb_volume = wibox.widget({ type = "textbox", name = "tb_volume", align = "right" })
+ tb_volume:buttons({
+ 	button({ }, 4, function () volume("up", tb_volume) end),
+ 	button({ }, 5, function () volume("down", tb_volume) end),
+ 	button({ }, 1, function () volume("mute", tb_volume) end)
+ })
+-- volume("update", tb_volume)
+
 -- Keyboard map indicator and switcher
 mykeyboardlayout = awful.widget.keyboardlayout()
 
--- {{{ Wibar
 -- Create a textclock widget
 mytextclock = wibox.widget.textclock()
 
@@ -268,11 +316,12 @@ end
 
 --}}
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
-screen.connect_signal("property::geometry", set_wallpaper)
+-- screen.connect_signal("property::geometry", set_wallpaper)
 
+--- For each screen do these actions
 awful.screen.connect_for_each_screen(function(s)
-    -- Wallpaper
-    set_wallpaper(s)
+    -- Set Wallpaper
+    -- set_wallpaper(s)
 
     -- Each screen has its own tag table.
     awful.tag(names, s, awful.layout.layouts[1])
@@ -308,6 +357,7 @@ awful.screen.connect_for_each_screen(function(s)
         s.mytasklist, -- Middle widget
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
+            tb_volume,
             mykeyboardlayout,
             wibox.widget.systray(),
             mytextclock,
@@ -315,7 +365,6 @@ awful.screen.connect_for_each_screen(function(s)
         },
     }
 end)
--- }}}
 
 -- {{{ Mouse bindings
 root.buttons(gears.table.join(
@@ -593,9 +642,11 @@ awful.rules.rules = {
      { rule_any = { class = { "xterm", "gnome-terminal", "lxterminal", "mate-terminal"} },
       properties = { tag = "Terminal" } },
 
-      { rule_any = { class = { "Signal", "Slack", "Teams", "Telegram", "Discord" } },
+      { rule_any = { class = { "Signal", "Slack", "Teams", "Telegram", "Discord", "meet" } },
+            properties = { tag = "IM" } },
 
-      properties = { tag = "IM" } },
+      { rule_any = { class = { "Cisco Anyconnect" } },
+      properties = { tag = "Miscellaneous" } },
 }
 -- }}}
 
@@ -666,10 +717,6 @@ client.connect_signal("mouse::enter", function(c)
     end
 end)
 
---client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
---client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
--- }}}
-
 awful.util.spawn("eval $(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg) &")
 -- autostart dropbox, rescuetime, network manager etc..
 awful.util.spawn("nm-applet &")
@@ -678,12 +725,12 @@ awful.util.spawn("dropbox start &")
 awful.util.spawn("nohup rescuetime &")
 --awful.util.spawn("nohup signal-desktop &")
 -- music
-awful.util.spawn("nohup spotify &")
+-- awful.util.spawn("nohup spotify &")
 -- redshift
 awful.util.spawn("nohup redshift &")
 
 --awful.util.spawn("nohup signal-desktop &")
--- awful.util.spawn("nohup teams &")
+awful.util.spawn("nohup teams &")
 -- awful.util.spawn("nohup skypeforlinux &")
 -- awful.util.spawn("nohup gitter &")
 -- awful.util.spawn("nohup slack &")
@@ -691,6 +738,6 @@ awful.util.spawn("nohup redshift &")
 -- awful.util.spawn("nohup discord &")
 -- awful.util.spawn("nohup teams &")
 -- awful.util.spawn("nohup telegram-desktop &")
+awful.util.spawn("nohup /opt/cisco/anyconnect &")
 -- awful.util.spawn("xscreensaver &")
 awful.util.spawn("sudo " .. string.format("%s/playspace/get-shit-done/get-shit-done.py work;", os.getenv("HOME")))
--- awful.util.spawn("feh --bg-scale ~/.config/awesome/wallpaper/The-real-violence-the-violence-that-I-realized-was-unforgivable-is-the-violence-that-we-do-to-ourselves-when-were-too-afraid-to-be-who-we-really-are.jpg;")
