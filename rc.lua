@@ -93,39 +93,62 @@ wp_timer:connect_signal("timeout", function()
 end)
 
 -- initial start when rc.lua is first run
-wp_timer:start()
+-- wp_timer:start()
+-- gears.wallpaper.maximized(wp_path .. '/' .. wp_files[wp_index], s, true)
+-- setup the timer
+--wp_timer = timer { timeout = wp_timeout }
+--wp_timer:connect_signal("timeout", function()
+--
+--  -- set wallpaper to current index for all screens
+--  for s = 1, screen.count() do
+--    gears.wallpaper.maximized(wp_path .. '/' .. wp_files[wp_index], s, true)
+--  end
+--
+--  -- stop the timer (we don't need multiple instances running at the same time)
+--  wp_timer:stop()
+--
+--  -- get next random index
+--  wp_index = math.random( 1, #wp_files)
+--
+--  --restart the timer
+--  wp_timer.timeout = wp_timeout
+--  wp_timer:start()
+--end)
+--
+---- initial start when rc.lua is first run
+--wp_timer:start()
 
 -- Setup Volume control
--- cardid  = 3
--- channel = "Master"
--- function volume (mode, widget)
--- 	if mode == "update" then
---              local fd = io.popen("amixer -c " .. cardid .. " -- sget " .. channel)
---              local status = fd:read("*all")
---              fd:close()
---
--- 		local volume = string.match(status, "(%d?%d?%d)%%")
--- 		volume = string.format("% 3d", volume)
---
--- 		status = string.match(status, "%[(o[^%]]*)%]")
---
--- 		if string.find(status, "on", 1, true) then
--- 			volume = volume .. "%"
--- 		else
--- 			volume = volume .. "M"
--- 		end
--- 		widget.text = volume
--- 	elseif mode == "up" then
--- 		io.popen("amixer -q -c " .. cardid .. " sset " .. channel .. " 5%+"):read("*all")
--- 		volume("update", widget)
--- 	elseif mode == "down" then
--- 		io.popen("amixer -q -c " .. cardid .. " sset " .. channel .. " 5%-"):read("*all")
--- 		volume("update", widget)
--- 	else
--- 		io.popen("amixer -c " .. cardid .. " sset " .. channel .. " toggle"):read("*all")
--- 		volume("update", widget)
--- 	end
--- end
+cardid  = 3
+channel = "Master"
+function volume (mode, widget)
+	if mode == "update" then
+             local fd = io.popen("amixer -c " .. cardid .. " -- sget " .. channel)
+             local status = fd:read("*all")
+             fd:close()
+
+		local volume = string.match(status, "(%d?%d?%d)%%")
+		volume = string.format("% 3d", volume)
+
+		status = string.match(status, "%[(o[^%]]*)%]")
+
+		if string.find(status, "on", 1, true) then
+			volume = volume .. "%"
+		else
+			volume = volume .. "M"
+		end
+		widget.text = volume
+	elseif mode == "up" then
+		io.popen("amixer -q -c " .. cardid .. " sset " .. channel .. " 5%+"):read("*all")
+		volume("update", widget)
+	elseif mode == "down" then
+		io.popen("amixer -q -c " .. cardid .. " sset " .. channel .. " 5%-"):read("*all")
+		volume("update", widget)
+	else
+		io.popen("amixer -c " .. cardid .. " sset " .. channel .. " toggle"):read("*all")
+		volume("update", widget)
+	end
+end
 -- -- make sure volume level is reflected in the widget
 -- vol_timer = timer {timeout = 10}
 -- vol_timer:connect_signal("timeout", function() volume("update", tb_volume) end)
