@@ -162,6 +162,7 @@ local awesome_autostart_once_fname = cachedir .. "/awesome-autostart-once-" .. o
 local awesome_client_tags_fname = cachedir .. "/awesome-client-tags-" .. os.getenv("XDG_SESSION_ID")
 -- This is used later as the default terminal and editor to run.
 terminal = "lxterminal"
+screenshot_cmd = "scrot -s"
 editor = os.getenv("EDITOR") or "editor"
 editor_cmd = terminal .. " -e " .. editor
 
@@ -448,7 +449,9 @@ globalkeys = gears.table.join(
             end
         end,
         {description = "go back", group = "client"}),
-
+    -- Screenshot command
+    awful.key({ modkey  , "Shift" }, "p", function () awful.spawn(screenshot_cmd) end,
+          {description = "take screenshot", group = "launcher"}),
     -- Standard program
     awful.key({ modkey,           }, "Return", function () awful.spawn(terminal) end,
               {description = "open a terminal", group = "launcher"}),
@@ -753,13 +756,12 @@ awful.util.spawn("nohup rescuetime &")
 awful.util.spawn("nohup redshift &")
 
 --awful.util.spawn("nohup signal-desktop &")
--- awful.util.spawn("nohup teams &")
+awful.util.spawn("nohup teams &")
 -- awful.util.spawn("nohup skypeforlinux &")
 -- awful.util.spawn("nohup gitter &")
 -- awful.util.spawn("nohup slack &")
 -- awful.util.spawn("nohup zoom &")
 -- awful.util.spawn("nohup discord &")
--- awful.util.spawn("nohup teams &")
 -- awful.util.spawn("nohup telegram-desktop &")
 awful.util.spawn("nohup /opt/cisco/anyconnect &")
 -- awful.util.spawn("xscreensaver &")
