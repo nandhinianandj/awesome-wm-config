@@ -70,53 +70,16 @@ wp_timeout  = 300
 wp_path = string.format("%s/.config/awesome/wallpaper/SFW", os.getenv("HOME"))
 wp_files = scandir(wp_path)
 
--- setup the timer
-wp_timer = timer { timeout = wp_timeout }
-wp_timer:connect_signal("timeout", function()
 
-  nomi_wp = "The-real-violence-the-violence-that-I-realized-was-unforgivable-is-the-violence-that-we-do-to-ourselves-when-were-too-afraid-to-be-who-we-really-are.jpg;"
-  -- set wallpaper to current index for all screens
-  for s = 1, screen.count() do
-    -- gears.wallpaper.maximized(wp_path .. '/' .. wp_files[wp_index], s, true)
-    gears.wallpaper.maximized(wp_path .. '/' .. nomi_wp, s, true)
-  end
+nomi_wp = wp_path .. '/' .. 'The-real-violence-the-violence-that-I-realized-was-unforgivable-is-the-violence-that-we-do-to-ourselves-when-were-too-afraid-to-be-who-we-really-are.jpg'
+climate_wp = wp_path .. '/' .. 'climateChangeDenialismStrategies.png'
+-- set wallpaper to current index for all screens
+--for s = 1, screen.count() do
+--    -- gears.wallpaper.maximized(wp_path .. '/' .. wp_files[wp_index], s, true)
+--    gears.wallpaper.maximized(wp_path .. '/' .. nomi_wp, s, true)
+--end
 
-  -- stop the timer (we don't need multiple instances running at the same time)
-  wp_timer:stop()
 
-  -- get next random index
-  wp_index = math.random( 1, #wp_files)
-
-  --restart the timer
-  wp_timer.timeout = wp_timeout
-  wp_timer:start()
-end)
-
--- initial start when rc.lua is first run
--- wp_timer:start()
--- gears.wallpaper.maximized(wp_path .. '/' .. wp_files[wp_index], s, true)
--- setup the timer
---wp_timer = timer { timeout = wp_timeout }
---wp_timer:connect_signal("timeout", function()
---
---  -- set wallpaper to current index for all screens
---  for s = 1, screen.count() do
---    gears.wallpaper.maximized(wp_path .. '/' .. wp_files[wp_index], s, true)
---  end
---
---  -- stop the timer (we don't need multiple instances running at the same time)
---  wp_timer:stop()
---
---  -- get next random index
---  wp_index = math.random( 1, #wp_files)
---
---  --restart the timer
---  wp_timer.timeout = wp_timeout
---  wp_timer:start()
---end)
---
----- initial start when rc.lua is first run
---wp_timer:start()
 
 -- Setup Volume control
 cardid  = 3
@@ -313,39 +276,17 @@ local function set_wallpaper(s)
         if type(wallpaper) == "function" then
             wallpaper = wallpaper(s)
         end
-        gears.wallpaper.maximized(wallpaper, s, true)
+        gears.wallpaper.maximized(nomi_wp, s, true)
     end
 end
 
--- randomly select a background picture
---{{
---func.change_wallpaper = function ()
---if option.wallpaper_change_p then
---    awful.util.spawn_with_shell("cd " .. config_path .. "/wallpaper/; ./my-wallpaper-pick.sh")
---end
---end
---timer.change_wallpaper= gears.timer({timeout = customization.default.wallpaper_change_interval})
---timer.change_wallpaper:connect_signal("timeout", func.change_wallpaper)
---
---timer.change_wallpaper:connect_signal("property::timeout",
---    function ()
---        timer.change_wallpaper:stop()
---        timer.change_wallpaper:start()
---    end
---    )
---
---timer.change_wallpaper:start()
----- first trigger
---func.change_wallpaper()
-
---}}
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
 -- screen.connect_signal("property::geometry", set_wallpaper)
 
 --- For each screen do these actions
 awful.screen.connect_for_each_screen(function(s)
     -- Set Wallpaper
-    -- set_wallpaper(s)
+    set_wallpaper(s)
 
     -- Each screen has its own tag table.
     awful.tag(names, s, awful.layout.layouts[1])
