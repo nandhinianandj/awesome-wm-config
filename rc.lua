@@ -178,7 +178,7 @@ myawesomemenu = {
    { "hotkeys", function() return false, hotkeys_popup.show_help end},
    { "manual", terminal .. " -e man awesome" },
    { "edit config", editor_cmd .. " " .. awesome.conffile },
-   { "switch user", terminal .. " -e /usr/bin/dm-tool switch-to-user oracle" },
+   { "switch user", terminal .. " -e /usr/bin/dm-tool switch-to-greeter " },
    { "restart", awesome.restart },
    { "quit", function() awesome.quit() end}
 }
