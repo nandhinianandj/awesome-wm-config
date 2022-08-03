@@ -125,7 +125,7 @@ local names = { "1", "Browser", "Terminal", "IM", "Miscellaneous"}
 -- local awesome_client_tags_fname = cachedir .. "/awesome-client-tags-" .. os.getenv("XDG_SESSION_ID")
 -- This is used later as the default terminal and editor to run.
 terminal = "lxterminal"
-screenshot_cmd = "scrot -s '%Y-%m-%d_$wx$h_scrot.png' -e 'mv $f ~/Pictures/shots/'"
+screenshot_cmd = "scrot -s"
 editor = os.getenv("EDITOR") or "editor"
 editor_cmd = terminal .. " -e " .. editor
 
@@ -612,7 +612,7 @@ awful.rules.rules = {
       { rule_any = { class = { "Signal", "Slack", "Teams", "Telegram", "Discord", "meet" } },
             properties = { tag = "IM" } },
 
-      { rule_any = { class = { "Cisco Anyconnect", "Spotify" } },
+      { rule_any = { class = { "Cisco Anyconnect" } },
       properties = { tag = "Miscellaneous" } },
 }
 -- }}}
@@ -690,19 +690,20 @@ awful.util.spawn("nm-applet &")
 awful.util.spawn("dropbox start &")
 -- Communications and time management.
 awful.util.spawn("nohup rescuetime &")
+--awful.util.spawn("nohup signal-desktop &")
 -- music
-awful.util.spawn("nohup spotify &")
+-- awful.util.spawn("nohup spotify &")
 -- redshift
 awful.util.spawn("nohup redshift &")
 
-awful.util.spawn("nohup signal-desktop &")
--- awful.util.spawn("nohup teams &")
+--awful.util.spawn("nohup signal-desktop &")
+awful.util.spawn("nohup teams &")
 -- awful.util.spawn("nohup skypeforlinux &")
 -- awful.util.spawn("nohup gitter &")
 -- awful.util.spawn("nohup slack &")
 -- awful.util.spawn("nohup zoom &")
-awful.util.spawn("nohup discord &")
-awful.util.spawn("nohup telegram-desktop &")
---awful.util.spawn("nohup /opt/cisco/anyconnect/bin/vpnui &")
+-- awful.util.spawn("nohup discord &")
+-- awful.util.spawn("nohup telegram-desktop &")
+awful.util.spawn("nohup /opt/cisco/anyconnect/bin/vpnui &")
 -- awful.util.spawn("xscreensaver &")
 awful.util.spawn("sudo " .. string.format("%s/playspace/get-shit-done/get-shit-done.py work;", os.getenv("HOME")))
