@@ -125,7 +125,7 @@ local names = { "1", "Browser", "Terminal", "IM", "Miscellaneous"}
 -- local awesome_client_tags_fname = cachedir .. "/awesome-client-tags-" .. os.getenv("XDG_SESSION_ID")
 -- This is used later as the default terminal and editor to run.
 terminal = "lxterminal"
-screenshot_cmd = "scrot -s"
+screenshot_cmd = "scrot -s '%Y-%m-%d_$wx$h_scrot.png' -e 'mv $f ~/Pictures/shots/'"
 editor = os.getenv("EDITOR") or "editor"
 editor_cmd = terminal .. " -e " .. editor
 
