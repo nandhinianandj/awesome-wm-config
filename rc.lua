@@ -609,7 +609,7 @@ awful.rules.rules = {
      { rule_any = { class = { "xterm", "gnome-terminal", "lxterminal", "mate-terminal"} },
       properties = { tag = "Terminal" } },
 
-      { rule_any = { class = { "Signal", "Slack", "Teams", "Telegram", "Discord", "meet" } },
+      { rule_any = { class = { "Signal", "Slack", "Teams", "Zoom Meeting", "Telegram", "Discord", "meet" } },
             properties = { tag = "IM" } },
 
       { rule_any = { class = { "Cisco Anyconnect", "Spotify" } },
@@ -687,7 +687,6 @@ end)
 awful.util.spawn("eval $(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg) &")
 -- autostart dropbox, rescuetime, network manager etc..
 awful.util.spawn("nm-applet &")
-awful.util.spawn("dropbox start &")
 -- Communications and time management.
 awful.util.spawn("nohup rescuetime &")
 -- music
@@ -701,6 +700,7 @@ awful.util.spawn("nohup signal-desktop &")
 -- awful.util.spawn("nohup gitter &")
 -- awful.util.spawn("nohup slack &")
 -- awful.util.spawn("nohup zoom &")
+awful.util.spawn("nohup dropbox start &")
 awful.util.spawn("nohup discord &")
 awful.util.spawn("nohup telegram-desktop &")
 --awful.util.spawn("nohup /opt/cisco/anyconnect/bin/vpnui &")
