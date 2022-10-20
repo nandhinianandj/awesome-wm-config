@@ -14,22 +14,22 @@ local hotkeys_popup = require("awful.hotkeys_popup").widget
 -- when client with a matching name is opened:
 require("awful.hotkeys_popup.keys")
 
-local power = require("power_widget")
+-- local power = require("power_widget")
 
-power.warning_config = {
-  percentage = 15,
-  message = "The battery is getting low",
-  preset = {
-    shape = gears.shape.rounded_rect,
-    timeout = 12,
-    bg = "#FFFF00",
-    fg = "#000000",
-  },
-}
--- override the GUI client.
-power.gui_client = "xfce4-power-manager-settings"
--- override the critical battery percentage
-power.critical_percentage = 25
+--power.warning_config = {
+--  percentage = 15,
+--  message = "The battery is getting low",
+--  preset = {
+--    shape = gears.shape.rounded_rect,
+--    timeout = 12,
+--    bg = "#FFFF00",
+--    fg = "#000000",
+--  },
+--}
+---- override the GUI client.
+--power.gui_client = "xfce4-power-manager-settings"
+---- override the critical battery percentage
+--power.critical_percentage = 25
 
 -- Load Debian menu entries
 local debian = require("debian.menu")
