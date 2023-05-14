@@ -14,6 +14,23 @@ local hotkeys_popup = require("awful.hotkeys_popup").widget
 -- when client with a matching name is opened:
 require("awful.hotkeys_popup.keys")
 
+-- local power = require("power_widget")
+
+--power.warning_config = {
+--  percentage = 15,
+--  message = "The battery is getting low",
+--  preset = {
+--    shape = gears.shape.rounded_rect,
+--    timeout = 12,
+--    bg = "#FFFF00",
+--    fg = "#000000",
+--  },
+--}
+---- override the GUI client.
+--power.gui_client = "xfce4-power-manager-settings"
+---- override the critical battery percentage
+--power.critical_percentage = 25
+
 -- Load Debian menu entries
 local debian = require("debian.menu")
 local has_fdo, freedesktop = pcall(require, "freedesktop")
@@ -46,18 +63,86 @@ end
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
 --beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
-beautiful.init("~/.config/awesome/themes/zenburn/theme.lua")
-for s = 1, screen.count() do
-	gears.wallpaper.maximized(beautiful.wallpaper, s, true)
+-- scan directory, and optionally filter outputs
+function scandir(directory, filter)
+    local i, t, popen = 0, {}, io.popen
+    if not filter then
+        filter = function(s) return true end
+    end
+    for filename in popen('ls -a "'..directory..'"'):lines() do
+        if filter(filename) then
+            i = i + 1
+            t[i] = filename
+        end
+    end
+    return t
 end
 
+-- }}}
+local theme_path = string.format("%s/.config/awesome/themes/%s/theme.lua", os.getenv("HOME"), "zenburn")
+beautiful.init(theme_path)
+-- configuration - edit to your liking
+wp_index = 1
+wp_timeout  = 300
+wp_path = string.format("%s/.config/awesome/wallpaper/SFW", os.getenv("HOME"))
+wp_files = scandir(wp_path)
+
+
+nomi_wp = wp_path .. '/' .. 'The-real-violence-the-violence-that-I-realized-was-unforgivable-is-the-violence-that-we-do-to-ourselves-when-were-too-afraid-to-be-who-we-really-are.jpg'
+climate_wp = wp_path .. '/' .. 'climateChangeDenialismStrategies.png'
+-- set wallpaper to current index for all screens
+--for s = 1, screen.count() do
+--    -- gears.wallpaper.maximized(wp_path .. '/' .. wp_files[wp_index], s, true)
+--    gears.wallpaper.maximized(wp_path .. '/' .. nomi_wp, s, true)
+--end
+
+
+
+-- Setup Volume control
+cardid  = 3
+channel = "Master"
+function volume (mode, widget)
+	if mode == "update" then
+             local fd = io.popen("amixer -c " .. cardid .. " -- sget " .. channel)
+             local status = fd:read("*all")
+             fd:close()
+
+		local volume = string.match(status, "(%d?%d?%d)%%")
+		volume = string.format("% 3d", volume)
+
+		status = string.match(status, "%[(o[^%]]*)%]")
+
+		if string.find(status, "on", 1, true) then
+			volume = volume .. "%"
+		else
+			volume = volume .. "M"
+		end
+		widget.text = volume
+	elseif mode == "up" then
+		io.popen("amixer -q -c " .. cardid .. " sset " .. channel .. " 5%+"):read("*all")
+		volume("update", widget)
+	elseif mode == "down" then
+		io.popen("amixer -q -c " .. cardid .. " sset " .. channel .. " 5%-"):read("*all")
+		volume("update", widget)
+	else
+		io.popen("amixer -c " .. cardid .. " sset " .. channel .. " toggle"):read("*all")
+		volume("update", widget)
+	end
+end
+-- -- make sure volume level is reflected in the widget
+-- vol_timer = timer {timeout = 10}
+-- vol_timer:connect_signal("timeout", function() volume("update", tb_volume) end)
+-- vol_timer:start()
+
+--- Variables
 local names = { "1", "Browser", "Terminal", "IM", "Miscellaneous"}
-local cachedir = awful.util.getdir("cache")
-local awesome_tags_fname = cachedir .. "/awesome-tags"
-local awesome_autostart_once_fname = cachedir .. "/awesome-autostart-once-" .. os.getenv("XDG_SESSION_ID")
-local awesome_client_tags_fname = cachedir .. "/awesome-client-tags-" .. os.getenv("XDG_SESSION_ID")
+-- local cachedir = awful.util.getdir("cache")
+-- local awesome_tags_fname = cachedir .. "/awesome-tags"
+-- local awesome_autostart_once_fname = cachedir .. "/awesome-autostart-once-" .. os.getenv("XDG_SESSION_ID")
+-- local awesome_client_tags_fname = cachedir .. "/awesome-client-tags-" .. os.getenv("XDG_SESSION_ID")
 -- This is used later as the default terminal and editor to run.
 terminal = "lxterminal"
+screenshot_cmd = "scrot -s '%Y-%m-%d_$wx$h_scrot.png' -e 'mv $f ~/Pictures/shots/'"
 editor = os.getenv("EDITOR") or "editor"
 editor_cmd = terminal .. " -e " .. editor
 
@@ -110,7 +195,7 @@ myawesomemenu = {
    { "hotkeys", function() return false, hotkeys_popup.show_help end},
    { "manual", terminal .. " -e man awesome" },
    { "edit config", editor_cmd .. " " .. awesome.conffile },
-   { "switch user", terminal .. " -e /usr/bin/dm-tool switch-to-user oracle" },
+   { "switch user", terminal .. " -e /usr/bin/dm-tool switch-to-greeter " },
    { "restart", awesome.restart },
    { "quit", function() awesome.quit() end}
 }
@@ -141,10 +226,19 @@ mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
 menubar.utils.terminal = terminal -- Set the terminal for applications that require it
 -- }}}
 
+-- Volume control widget
+
+tb_volume = wibox.widget({ type = "textbox", name = "tb_volume", align = "right" })
+ tb_volume:buttons({
+ 	button({ }, 4, function () volume("up", tb_volume) end),
+ 	button({ }, 5, function () volume("down", tb_volume) end),
+ 	button({ }, 1, function () volume("mute", tb_volume) end)
+ })
+-- volume("update", tb_volume)
+
 -- Keyboard map indicator and switcher
 mykeyboardlayout = awful.widget.keyboardlayout()
 
--- {{{ Wibar
 -- Create a textclock widget
 mytextclock = wibox.widget.textclock()
 
@@ -199,37 +293,16 @@ local function set_wallpaper(s)
         if type(wallpaper) == "function" then
             wallpaper = wallpaper(s)
         end
-        gears.wallpaper.maximized(wallpaper, s, true)
+        gears.wallpaper.maximized(nomi_wp, s, true)
     end
 end
 
--- randomly select a background picture
---{{
---func.change_wallpaper = function ()
---if option.wallpaper_change_p then
---    awful.util.spawn_with_shell("cd " .. config_path .. "/wallpaper/; ./my-wallpaper-pick.sh")
---end
---end
---timer.change_wallpaper= gears.timer({timeout = customization.default.wallpaper_change_interval})
---timer.change_wallpaper:connect_signal("timeout", func.change_wallpaper)
---
---timer.change_wallpaper:connect_signal("property::timeout",
---    function ()
---        timer.change_wallpaper:stop()
---        timer.change_wallpaper:start()
---    end
---    )
---
---timer.change_wallpaper:start()
----- first trigger
---func.change_wallpaper()
-
---}}
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
-screen.connect_signal("property::geometry", set_wallpaper)
+-- screen.connect_signal("property::geometry", set_wallpaper)
 
+--- For each screen do these actions
 awful.screen.connect_for_each_screen(function(s)
-    -- Wallpaper
+    -- Set Wallpaper
     set_wallpaper(s)
 
     -- Each screen has its own tag table.
@@ -266,14 +339,15 @@ awful.screen.connect_for_each_screen(function(s)
         s.mytasklist, -- Middle widget
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
+            tb_volume,
             mykeyboardlayout,
             wibox.widget.systray(),
             mytextclock,
+            power,
             s.mylayoutbox,
         },
     }
 end)
--- }}}
 
 -- {{{ Mouse bindings
 root.buttons(gears.table.join(
@@ -334,7 +408,9 @@ globalkeys = gears.table.join(
             end
         end,
         {description = "go back", group = "client"}),
-
+    -- Screenshot command
+    awful.key({ modkey  , "Shift" }, "p", function () awful.spawn(screenshot_cmd) end,
+          {description = "take screenshot", group = "launcher"}),
     -- Standard program
     awful.key({ modkey,           }, "Return", function () awful.spawn(terminal) end,
               {description = "open a terminal", group = "launcher"}),
@@ -551,28 +627,30 @@ awful.rules.rules = {
      { rule_any = { class = { "xterm", "gnome-terminal", "lxterminal", "mate-terminal"} },
       properties = { tag = "Terminal" } },
 
-      { rule_any = { class = { "+Signal", "Slack", "Teams", "Telegram", "Discord" } },
+      { rule_any = { class = { "Signal", "Slack", "Teams", "Zoom Meeting", "Telegram", "Discord", "meet" } },
+            properties = { tag = "IM" } },
 
-      properties = { tag = "IM" } },
+      { rule_any = { class = { "Cisco Anyconnect", "Spotify" } },
+      properties = { tag = "Miscellaneous" } },
 }
 -- }}}
 
 -- {{{ Signals
 -- Signal function to execute when a new client appears.
-client.connect_signal("manage", function (c)
-    -- Set the windows at the slave,
-    -- i.e. put it at the end of others instead of setting it master.
-    -- if not awesome.startup then awful.client.setslave(c) end
-
-    if awesome.startup and
-      not c.size_hints.user_position
-      and not c.size_hints.program_position then
-        -- Prevent clients from being unreachable after screen count changes.
-	awful.client.movetoscreen(c, client.focus.screen)
-	awful.client.movetoscreen(c, client.focus.screen)
-        awful.placement.no_offscreen(c)
-    end
-end)
+-- client.connect_signal("manage", function (c)
+--     -- Set the windows at the slave,
+--     -- i.e. put it at the end of others instead of setting it master.
+--     -- if not awesome.startup then awful.client.setslave(c) end
+--
+--     if awesome.startup and
+--       not c.size_hints.user_position
+--       and not c.size_hints.program_position then
+--         -- Prevent clients from being unreachable after screen count changes.
+-- 	awful.client.movetoscreen(c, client.focus.screen)
+-- 	awful.client.movetoscreen(c, client.focus.screen)
+--         awful.placement.no_offscreen(c)
+--     end
+-- end)
 
 -- Add a titlebar if titlebars_enabled is set to true in the rules.
 client.connect_signal("request::titlebars", function(c)
@@ -624,26 +702,25 @@ client.connect_signal("mouse::enter", function(c)
     end
 end)
 
---client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
---client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
--- }}}
-
 awful.util.spawn("eval $(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg) &")
 -- autostart dropbox, rescuetime, network manager etc..
 awful.util.spawn("nm-applet &")
-awful.util.spawn("dropbox start &")
 -- Communications and time management.
 awful.util.spawn("nohup rescuetime &")
 -- music
 awful.util.spawn("nohup spotify &")
--- Comms
+-- redshift
+-- awful.util.spawn("nohup redshift &")
+
 awful.util.spawn("nohup signal-desktop &")
 -- awful.util.spawn("nohup teams &")
 -- awful.util.spawn("nohup skypeforlinux &")
 -- awful.util.spawn("nohup gitter &")
 -- awful.util.spawn("nohup slack &")
 -- awful.util.spawn("nohup zoom &")
-awful.util.spawn("nohup discord &")
--- awful.util.spawn("nohup teams &")
--- awful.util.spawn("nohup telegram-desktop &")
+awful.util.spawn("nohup dropbox start &")
+--awful.util.spawn("nohup discord &")
+--awful.util.spawn("nohup telegram-desktop &")
+--awful.util.spawn("nohup /opt/cisco/anyconnect/bin/vpnui &")
 -- awful.util.spawn("xscreensaver &")
+awful.util.spawn("sudo " .. string.format("%s/playspace/get-shit-done/get-shit-done.py work;", os.getenv("HOME")))
