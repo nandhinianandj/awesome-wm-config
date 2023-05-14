@@ -551,7 +551,7 @@ awful.rules.rules = {
      { rule_any = { class = { "xterm", "gnome-terminal", "lxterminal", "mate-terminal"} },
       properties = { tag = "Terminal" } },
 
-      { rule_any = { class = { "Signal", "Slack", "Teams", "Telegram", "Discord" } },
+      { rule_any = { class = { "+Signal", "Slack", "Teams", "Telegram", "Discord" } },
 
       properties = { tag = "IM" } },
 }
