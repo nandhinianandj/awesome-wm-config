@@ -84,11 +84,11 @@ beautiful.init(theme_path)
 -- configuration - edit to your liking
 wp_index = 1
 wp_timeout  = 300
-wp_path = string.format("%s/.config/awesome/wallpaper/SFW", os.getenv("HOME"))
+wp_path = string.format("%s/syncthing/wallpaper/SFW", os.getenv("HOME"))
 wp_files = scandir(wp_path)
 
 
-nomi_wp = wp_path .. '/' .. 'The-real-violence-the-violence-that-I-realized-was-unforgivable-is-the-violence-that-we-do-to-ourselves-when-were-too-afraid-to-be-who-we-really-are.jpg'
+nomi_wp = wp_path .. '/' .. '87176258_10158216083568586_2744505873333223424_o.jpg'
 climate_wp = wp_path .. '/' .. 'climateChangeDenialismStrategies.png'
 -- set wallpaper to current index for all screens
 --for s = 1, screen.count() do
@@ -718,7 +718,7 @@ awful.util.spawn("nohup spotify &")
 -- awful.util.spawn("nohup gitter &")
 -- awful.util.spawn("nohup slack &")
 -- awful.util.spawn("nohup zoom &")
-awful.util.spawn("nohup dropbox start &")
+-- awful.util.spawn("nohup dropbox start &")
 --awful.util.spawn("nohup discord &")
 --awful.util.spawn("nohup telegram-desktop &")
 --awful.util.spawn("nohup /opt/cisco/anyconnect/bin/vpnui &")
