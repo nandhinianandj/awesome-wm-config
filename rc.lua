@@ -84,17 +84,18 @@ beautiful.init(theme_path)
 -- configuration - edit to your liking
 wp_index = 1
 wp_timeout  = 300
-wp_path = string.format("%s/syncthing/wallpaper/SFW", os.getenv("HOME"))
+wp_path = string.format("%s/syncthing/wallpaper", os.getenv("HOME"))
 wp_files = scandir(wp_path)
 
-
-nomi_wp = wp_path .. '/' .. '87176258_10158216083568586_2744505873333223424_o.jpg'
-climate_wp = wp_path .. '/' .. 'climateChangeDenialismStrategies.png'
+--nomi_wp = wp_path .. '/' .. '87176258_10158216083568586_2744505873333223424_o.jpg'
+--climate_wp = wp_path .. '/' .. 'climateChangeDenialismStrategies.png'
+-- climate_risks = wp_path .. '/' .. '1682973858638.jpeg'
+cc1_layout = wp_path .. '/' .. 'cc1_alpha_layout.png'
 -- set wallpaper to current index for all screens
---for s = 1, screen.count() do
---    -- gears.wallpaper.maximized(wp_path .. '/' .. wp_files[wp_index], s, true)
---    gears.wallpaper.maximized(wp_path .. '/' .. nomi_wp, s, true)
---end
+for s = 1, screen.count() do
+    -- gears.wallpaper.maximized(wp_path .. '/' .. wp_files[wp_index], s, true)
+    gears.wallpaper.maximized(cc1_layout, s, true)
+end
 
 
 
@@ -285,17 +286,17 @@ local tasklist_buttons = gears.table.join(
                                               awful.client.focus.byidx(-1)
                                           end))
 
-local function set_wallpaper(s)
-    -- Wallpaper
-    if beautiful.wallpaper then
-        local wallpaper = beautiful.wallpaper
-        -- If wallpaper is a function, call it with the screen
-        if type(wallpaper) == "function" then
-            wallpaper = wallpaper(s)
-        end
-        gears.wallpaper.maximized(nomi_wp, s, true)
-    end
-end
+-- local function set_wallpaper(s)
+--     -- Wallpaper
+--     if beautiful.wallpaper then
+--         local wallpaper = beautiful.wallpaper
+--         -- If wallpaper is a function, call it with the screen
+--         if type(wallpaper) == "function" then
+--             wallpaper = wallpaper(s)
+--         end
+--         gears.wallpaper.maximized(nomi_wp, s, true)
+--     end
+-- end
 
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
 -- screen.connect_signal("property::geometry", set_wallpaper)
@@ -303,7 +304,7 @@ end
 --- For each screen do these actions
 awful.screen.connect_for_each_screen(function(s)
     -- Set Wallpaper
-    set_wallpaper(s)
+    --set_wallpaper(s)
 
     -- Each screen has its own tag table.
     awful.tag(names, s, awful.layout.layouts[1])
@@ -708,7 +709,7 @@ awful.util.spawn("nm-applet &")
 -- Communications and time management.
 awful.util.spawn("nohup rescuetime &")
 -- music
-awful.util.spawn("nohup spotify &")
+-- awful.util.spawn("nohup spotify &")
 -- redshift
 -- awful.util.spawn("nohup redshift &")
 
