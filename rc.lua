@@ -136,7 +136,7 @@ end
 -- vol_timer:start()
 
 --- Variables
-local names = { "1", "Browser", "Terminal", "IM", "Miscellaneous"}
+local names = { "Home", "Browser", "Terminal", "IM", "Miscellaneous"}
 -- local cachedir = awful.util.getdir("cache")
 -- local awesome_tags_fname = cachedir .. "/awesome-tags"
 -- local awesome_autostart_once_fname = cachedir .. "/awesome-autostart-once-" .. os.getenv("XDG_SESSION_ID")
@@ -152,7 +152,7 @@ editor_cmd = terminal .. " -e " .. editor
 -- If you do not like this or do not have such a key,
 -- I suggest you to remap Mod4 to another key using xmodmap or other tools.
 -- However, you can use another modifier like Mod1, but it may interact with others.
-modkey = "Control"
+modkey = "Mod4"
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
 awful.layout.layouts = {
