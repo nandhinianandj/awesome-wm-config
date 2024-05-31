@@ -10,26 +10,12 @@ local beautiful = require("beautiful")
 local naughty = require("naughty")
 local menubar = require("menubar")
 local hotkeys_popup = require("awful.hotkeys_popup").widget
+-- xrandr script
+local xrandr = require("xrandr")
+
 -- Enable hotkeys help widget for VIM and other apps
 -- when client with a matching name is opened:
 require("awful.hotkeys_popup.keys")
-
--- local power = require("power_widget")
-
---power.warning_config = {
---  percentage = 15,
---  message = "The battery is getting low",
---  preset = {
---    shape = gears.shape.rounded_rect,
---    timeout = 12,
---    bg = "#FFFF00",
---    fg = "#000000",
---  },
---}
----- override the GUI client.
---power.gui_client = "xfce4-power-manager-settings"
----- override the critical battery percentage
---power.critical_percentage = 25
 
 -- Load Debian menu entries
 local debian = require("debian.menu")
@@ -408,6 +394,8 @@ globalkeys = gears.table.join(
     -- Screenshot command
     awful.key({ modkey  , "Shift" }, "p", function () awful.spawn(screenshot_cmd) end,
           {description = "take screenshot", group = "launcher"}),
+    -- Xrandr script
+    awful.key({modkey,      }, "x", function() xrandr.xrandr() end),
     -- Standard program
     awful.key({ modkey,           }, "Return", function () awful.spawn(terminal) end,
               {description = "open a terminal", group = "launcher"}),
@@ -660,9 +648,9 @@ awful.util.spawn("nm-applet &")
 -- Communications and time management.
 awful.util.spawn("nohup rescuetime &")
 -- music
--- awful.util.spawn("nohup spotify &")
+awful.util.spawn("nohup spotify &")
 -- redshift
--- awful.util.spawn("nohup redshift &")
+awful.util.spawn("nohup redshift &")
 
 -- awful.util.spawn("nohup signal-desktop &")
 -- awful.util.spawn("nohup teams &")
@@ -671,8 +659,7 @@ awful.util.spawn("nohup rescuetime &")
 -- awful.util.spawn("nohup slack &")
 -- awful.util.spawn("nohup zoom &")
 awful.util.spawn("nohup syncthing start &")
---awful.util.spawn("nohup discord &")
---awful.util.spawn("nohup telegram-desktop &")
---awful.util.spawn("nohup /opt/cisco/anyconnect/bin/vpnui &")
--- awful.util.spawn("xscreensaver &")
+awful.util.spawn("nohup discord &")
+awful.util.spawn("nohup telegram-desktop &")
+awful.util.spawn("xscreensaver &")
 awful.util.spawn("sudo " .. string.format("%s/playspace/get-shit-done/get-shit-done.py work;", os.getenv("HOME")))
