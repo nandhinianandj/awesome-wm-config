@@ -569,9 +569,9 @@ awful.rules.rules = {
 
       { rule_any = { class = { "Signal", "Slack", "Teams", "Zoom Meeting", "Telegram", "Discord", "meet" } },
             properties = { tag = "IM" } },
-
-      { rule_any = { class = { "Cisco Anyconnect", "Spotify" } },
-      properties = { tag = "Miscellaneous" } },
+  
+      { rule_any = { class = { "VLC", "Spotify" } },
+           properties = {tag = "Miscellaneous" } },
 }
 -- }}}
 
@@ -658,8 +658,8 @@ awful.util.spawn("nohup redshift &")
 -- awful.util.spawn("nohup gitter &")
 -- awful.util.spawn("nohup slack &")
 -- awful.util.spawn("nohup zoom &")
-awful.util.spawn("nohup syncthing start &")
+-- awful.util.spawn("nohup syncthing start &")
 awful.util.spawn("nohup discord &")
-awful.util.spawn("nohup telegram-desktop &")
+awful.util.spawn("nohup Telegram &")
 awful.util.spawn("xscreensaver &")
 awful.util.spawn("sudo " .. string.format("%s/playspace/get-shit-done/get-shit-done.py work;", os.getenv("HOME")))
