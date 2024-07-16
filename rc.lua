@@ -225,6 +225,8 @@ mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
 
 -- Menubar configuration
 menubar.utils.terminal = terminal -- Set the terminal for applications that require it
+menubar.menubar_border_width=50
+menubar.height = 50
 -- }}}
 
 -- Volume control widget
