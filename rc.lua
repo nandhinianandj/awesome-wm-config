@@ -81,6 +81,7 @@ end
 -- }}}
 local theme_path = string.format("%s/.config/awesome/themes/%s/theme.lua", os.getenv("HOME"), "zenburn")
 beautiful.init(theme_path)
+beautiful.wibar_height=30
 -- configuration - edit to your liking
 wp_index = 1
 wp_timeout  = 300
