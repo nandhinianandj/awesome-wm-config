@@ -82,22 +82,23 @@ end
 local theme_path = string.format("%s/.config/awesome/themes/%s/theme.lua", os.getenv("HOME"), "zenburn")
 beautiful.init(theme_path)
 beautiful.wibar_height=30
+-- configurations for beautiful
+beautiful.font = "sans 18"
 -- configuration - edit to your liking
 wp_index = 1
 wp_timeout  = 300
-wp_path = string.format("%s/syncthing/wallpaper", os.getenv("HOME"))
+wp_path = string.format("/media/nands/data/syncthing/tattoo_ideas", os.getenv("HOME"))
 wp_files = scandir(wp_path)
 
 --nomi_wp = wp_path .. '/' .. '87176258_10158216083568586_2744505873333223424_o.jpg'
 --climate_wp = wp_path .. '/' .. 'climateChangeDenialismStrategies.png'
 -- climate_risks = wp_path .. '/' .. '1682973858638.jpeg'
-cc1_layout = wp_path .. '/' .. 'cc1_alpha_layout.png'
+-- cc1_layout = wp_path .. '/' .. 'cc1_alpha_layout.png'
 -- set wallpaper to current index for all screens
-for s = 1, screen.count() do
-    -- gears.wallpaper.maximized(wp_path .. '/' .. wp_files[wp_index], s, true)
-    gears.wallpaper.maximized(cc1_layout, s, true)
-end
-
+--for s = 1, screen.count() do
+--    -- gears.wallpaper.maximized(wp_path .. '/' .. wp_files[wp_index], s, true)
+--    gears.wallpaper.maximized(cc1_layout, s, true)
+--end
 
 
 -- Setup Volume control
