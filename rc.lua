@@ -83,7 +83,7 @@ local theme_path = string.format("%s/.config/awesome/themes/%s/theme.lua", os.ge
 beautiful.init(theme_path)
 beautiful.wibar_height=30
 -- configurations for beautiful
-beautiful.font = "sans 18"
+beautiful.font = "monospace 18"
 -- configuration - edit to your liking
 wp_index = 1
 wp_timeout  = 300
@@ -674,7 +674,7 @@ awful.util.spawn("nohup rescuetime &")
 -- awful.util.spawn("nohup gitter &")
 -- awful.util.spawn("nohup slack &")
 -- awful.util.spawn("nohup zoom &")
-awful.util.spawn("nohup syncthing start &")
+awful.util.spawn("nohup syncthing &")
 --awful.util.spawn("nohup discord &")
 --awful.util.spawn("nohup telegram-desktop &")
 --awful.util.spawn("nohup /opt/cisco/anyconnect/bin/vpnui &")
