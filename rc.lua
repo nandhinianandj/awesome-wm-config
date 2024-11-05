@@ -138,7 +138,7 @@ end
 -- vol_timer:start()
 
 --- Variables
-local names = { "Home", "Browser", "Terminal", "IM", "Miscellaneous"}
+local names = {  "WorldWideWeb", "CodeMode", "Commune", "Miscellaneous"}
 -- local cachedir = awful.util.getdir("cache")
 -- local awesome_tags_fname = cachedir .. "/awesome-tags"
 -- local awesome_autostart_once_fname = cachedir .. "/awesome-autostart-once-" .. os.getenv("XDG_SESSION_ID")
@@ -158,16 +158,16 @@ modkey = "Mod4"
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
 awful.layout.layouts = {
-    awful.layout.suit.floating,
+    --awful.layout.suit.floating,
     awful.layout.suit.tile,
     awful.layout.suit.tile.left,
     awful.layout.suit.tile.bottom,
     awful.layout.suit.tile.top,
-    awful.layout.suit.fair,
+    -- awful.layout.suit.fair,
     -- awful.layout.suit.fair.horizontal,
     -- awful.layout.suit.spiral,
     -- awful.layout.suit.spiral.dwindle,
-    awful.layout.suit.max,
+    -- awful.layout.suit.max,
     -- awful.layout.suit.max.fullscreen,
     -- awful.layout.suit.magnifier,
     -- awful.layout.suit.corner.nw,
@@ -434,25 +434,25 @@ globalkeys = gears.table.join(
               {description = "select previous", group = "layout"}),
 
     -- Lock Screen
-    awful.key({ modkey },  	"l",  function () awful.spawn("slock") end,
+    awful.key({ modkey },  	"b",  function () awful.spawn("slock") end,
     		{description="lock screen", group="layout"}),
     -- Prompt
     awful.key({ modkey },            "r",     function () awful.screen.focused().mypromptbox:run() end,
-              {description = "run prompt", group = "launcher"}),
+              {description = "run prompt", group = "launcher"})
 
-    awful.key({ modkey }, "x",
-              function ()
-                  awful.prompt.run {
-                    prompt       = "Run Lua code: ",
-                    textbox      = awful.screen.focused().mypromptbox.widget,
-                    exe_callback = awful.util.eval,
-                    history_path = awful.util.get_cache_dir() .. "/history_eval"
-                  }
-              end,
-              {description = "lua execute prompt", group = "awesome"}),
+    -- awful.key({ modkey }, "x",
+    --           function ()
+    --               awful.prompt.run {
+    --                 prompt       = "Run Lua code: ",
+    --                 textbox      = awful.screen.focused().mypromptbox.widget,
+    --                 exe_callback = awful.util.eval,
+    --                 history_path = awful.util.get_cache_dir() .. "/history_eval"
+    --               }
+    --           end,
+    --           {description = "lua execute prompt", group = "awesome"}),
     -- Menubar
-    awful.key({ modkey }, "p", function() menubar.show() end,
-              {description = "show the menubar", group = "launcher"})
+    -- awful.key({ modkey }, "p", function() menubar.show() end,
+    --           {description = "show the menubar", group = "launcher"})
 )
 
 clientkeys = gears.table.join(
@@ -518,10 +518,10 @@ for i = 1, 5 do
     )
 end
 
-clientbuttons = gears.table.join(
-    awful.button({ }, 1, function (c) client.focus = c; c:raise() end),
-    awful.button({ modkey }, 1, awful.mouse.client.move),
-    awful.button({ modkey }, 3, awful.mouse.client.resize))
+-- clientbuttons = gears.table.join(
+--     awful.button({ }, 1, function (c) client.focus = c; c:raise() end),
+--     awful.button({ modkey }, 1, awful.mouse.client.move),
+--     awful.button({ modkey }, 3, awful.mouse.client.resize))
 
 -- Set keys
 root.keys(globalkeys)
@@ -537,7 +537,7 @@ awful.rules.rules = {
                      focus = awful.client.focus.filter,
                      raise = true,
                      keys = clientkeys,
-                     buttons = clientbuttons,
+                     -- buttons = clientbuttons,
                      screen = awful.screen.preferred,
                      placement = awful.placement.no_overlap+awful.placement.no_offscreen
      }
@@ -578,13 +578,13 @@ awful.rules.rules = {
     -- { rule = { class = "Firefox" },
     --   properties = { screen = 1, tag = "2" } },
      { rule_any = { class = { "firefox", "Chromium-browser", "Firefox", "Opera", "Brave" } },
-      properties = { tag = "Browser" } },
+      properties = { tag = "WorldWideWeb" } },
 
-     { rule_any = { class = { "xterm", "gnome-terminal", "lxterminal", "mate-terminal"} },
-      properties = { tag = "Terminal" } },
+     { rule_any = { class = { "xterm", "gnome-terminal", "lxterminal", "mate-terminal", "zed", "cursor", "Visual Studio Code"} },
+      properties = { tag = "CodeMode" } },
 
       { rule_any = { class = { "Signal", "Slack", "Teams", "Zoom Meeting", "Telegram", "Discord", "meet" } },
-            properties = { tag = "IM" } },
+            properties = { tag = "Commune" } },
 
       { rule_any = { class = { "Cisco Anyconnect", "Spotify" } },
       properties = { tag = "Miscellaneous" } },
