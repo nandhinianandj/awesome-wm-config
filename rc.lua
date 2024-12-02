@@ -199,6 +199,8 @@ myawesomemenu = {
    { "manual", terminal .. " -e man awesome" },
    { "edit config", editor_cmd .. " " .. awesome.conffile },
    { "switch user", terminal .. " -e /usr/bin/dm-tool switch-to-greeter " },
+   { "suspend", terminal .. " -e systemctl suspend" },
+   { "hibernate", terminal .. " -e systemctl hybrid-sleep" },
    { "restart", awesome.restart },
    { "quit", function() awesome.quit() end}
 }
