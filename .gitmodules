@@ -1,0 +1,3 @@
+[submodule "awmodoro"]
+	path = awmodoro
+	url = https://github.com/optama/awmodoro.git
