@@ -14,6 +14,9 @@ local hotkeys_popup = require("awful.hotkeys_popup").widget
 -- when client with a matching name is opened:
 require("awful.hotkeys_popup.keys")
 
+local screenful = require("screenful")
+local awmodoro = require("awmodoro")
+
 -- local power = require("power_widget")
 
 --power.warning_config = {
@@ -30,6 +33,34 @@ require("awful.hotkeys_popup.keys")
 --power.gui_client = "xfce4-power-manager-settings"
 ---- override the critical battery percentage
 --power.critical_percentage = 25
+
+--pomodoro wibox
+pomowibox = awful.wibox({ position = "top", screen = 1, height=4})
+pomowibox.visible = false
+local pomodoro = awmodoro.new({
+	minutes 			= 45,
+	do_notify 			= true,
+	active_bg_color 	= '#313131',
+	paused_bg_color 	= '#7746D7',
+	fg_color			= {type = "linear", from = {0,0}, to = {pomowibox.width, 0}, stops = {{0, "#AECF96"},{0.5, "#88A175"},{1, "#FF5656"}}},
+	width 				= pomowibox.width,
+	height 				= pomowibox.height, 
+
+	begin_callback = function()
+		for s in screen do
+			s.mywibox.visible = false
+		end
+		pomowibox.visible = true
+	end,
+
+	finish_callback = function()
+    awful.util.spawn("aplay	/home/foo/sounds/bell.wav")
+		for s in screen do
+			s.mywibox.visible = true
+		end
+		pomowibox.visible = false
+	end})
+pomowibox:set_widget(pomodoro)
 
 -- Load Debian menu entries
 local debian = require("debian.menu")
@@ -63,6 +94,22 @@ end
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
 --beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
+local themes = {
+    "blackburn",       -- 1
+    "copland",         -- 2
+    "dremora",         -- 3
+    "holo",            -- 4
+    "multicolor",      -- 5
+    "powerarrow",      -- 6
+    "powerarrow-dark", -- 7
+    "rainbow",         -- 8
+    "steamburn",       -- 9
+    "vertex"           -- 10
+}
+
+local chosen_theme = themes[8]
+local vi_focus     = false -- vi-like client focus https://github.com/lcpz/awesome-copycats/issues/275
+
 -- scan directory, and optionally filter outputs
 function scandir(directory, filter)
     local i, t, popen = 0, {}, io.popen
@@ -146,7 +193,7 @@ local names = {  "WorldWideWeb", "CodeMode", "Commune", "Miscellaneous"}
 -- This is used later as the default terminal and editor to run.
 terminal = "lxterminal"
 screenshot_cmd = "scrot -s '%Y-%m-%d_$wx$h_scrot.png' -e 'mv $f ~/Pictures/shots/'"
-editor = os.getenv("EDITOR") or "editor"
+editor = os.getenv("EDITOR") or "nvim"
 editor_cmd = terminal .. " -e " .. editor
 
 -- Default modkey.
