@@ -19,6 +19,8 @@ local awmodoro = require("awmodoro")
 
 local deficient = require("deficient")
 
+-- instanciate calendar widget
+local calendar_widget = deficient.calendar({})
 
 -- instanciate widget
 local battery_widget = deficient.battery_widget {
@@ -37,7 +39,7 @@ local battery_widget = deficient.battery_widget {
     widget_text = "${AC_BAT}${color_on}${percent}%${color_off}",
     widget_font = "Deja Vu Sans Mono 16",
     tooltip_text = "Battery ${state}${time_est}\nCapacity: ${capacity_percent}%",
-    alert_threshold = 5,
+    alert_threshold = 15,
     alert_timeout = 0,
     alert_title = "Low battery !",
     alert_text = "${AC_BAT}${time_est}",
@@ -45,11 +47,12 @@ local battery_widget = deficient.battery_widget {
     warn_full_battery = true,
     full_battery_icon = "~/Downloads/full_battery_icon.png",
 }
--- Instanciate widget:
+
+-- Instanciate cpu info widget:
 local cpuinfo = deficient.cpuinfo()
 
 --pomodoro wibar
-pomowibar = awful.wibox({ position = "top", screen = 1, height=4})
+pomowibar = awful.wibar({ position = "top", screen = 1, height=4})
 pomowibar.visible = false
 local pomodoro = awmodoro.new({
 	minutes 			= 45,
@@ -156,12 +159,11 @@ wp_files = scandir(wp_path)
 -- climate_risks = wp_path .. '/' .. '1682973858638.jpeg'
 buddha = wp_path .. '/quotes/' .. 'hm8uqv2t8j4e1.jpeg'
 -- cc1_layout = wp_path .. '/' .. 'cc1_alpha_layout.png'
+
 -- set wallpaper to current index for all screens
 for s = 1, screen.count() do
     gears.wallpaper.maximized(buddha, s, true)
-    -- gears.wallpaper.maximized(cc1_layout, s, true)
 end
-
 
 -- Setup Volume control
 cardid  = 3
@@ -201,10 +203,7 @@ end
 
 --- Variables
 local names = {  "WorldWideWeb", "CodeMode", "Commune", "Miscellaneous"}
--- local cachedir = awful.util.getdir("cache")
--- local awesome_tags_fname = cachedir .. "/awesome-tags"
--- local awesome_autostart_once_fname = cachedir .. "/awesome-autostart-once-" .. os.getenv("XDG_SESSION_ID")
--- local awesome_client_tags_fname = cachedir .. "/awesome-client-tags-" .. os.getenv("XDG_SESSION_ID")
+
 -- This is used later as the default terminal and editor to run.
 terminal = "lxterminal"
 screenshot_cmd = "scrot -s '%Y-%m-%d_$wx$h_scrot.png' -e 'mv $f ~/Pictures/shots/'"
@@ -225,17 +224,6 @@ awful.layout.layouts = {
     awful.layout.suit.tile.left,
     awful.layout.suit.tile.bottom,
     awful.layout.suit.tile.top,
-    -- awful.layout.suit.fair,
-    -- awful.layout.suit.fair.horizontal,
-    -- awful.layout.suit.spiral,
-    -- awful.layout.suit.spiral.dwindle,
-    -- awful.layout.suit.max,
-    -- awful.layout.suit.max.fullscreen,
-    -- awful.layout.suit.magnifier,
-    -- awful.layout.suit.corner.nw,
-    -- awful.layout.suit.corner.ne,
-    -- awful.layout.suit.corner.sw,
-    -- awful.layout.suit.corner.se,
 }
 -- }}}
 
@@ -310,6 +298,8 @@ mykeyboardlayout = awful.widget.keyboardlayout()
 
 -- Create a textclock widget
 mytextclock = wibar.widget.textclock()
+-- attach calendar it as popup to your text clock widget
+calendar_widget:attach(mytextclock)
 
 -- Create a wibar for each screen and add it
 local taglist_buttons = gears.table.join(
@@ -395,6 +385,28 @@ awful.screen.connect_for_each_screen(function(s)
 
     -- Create the wibar
     s.mywibar = awful.wibar({ position = "top", screen = s })
+        -- Add widgets to the wibar
+    s.mywibar:setup {
+        layout = wibar.layout.align.horizontal,
+        { -- Left widgets
+            layout = wibar.layout.fixed.horizontal,
+            mylauncher,
+            s.mytaglist,
+            s.mypromptbox,
+        },
+        s.mytasklist, -- Middle widget
+        { -- Right widgets
+            layout = wibar.layout.fixed.horizontal,
+            tb_volume,
+            mykeyboardlayout,
+            wibar.widget.systray(),
+            mytextclock,
+            battery_widget,
+            cpuinfo.widget,
+            screensaver_ctrl,
+            s.mylayoutbox,
+        },
+    }
 
 end)
 
