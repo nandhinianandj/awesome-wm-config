@@ -1,3 +1,6 @@
 [submodule "awmodoro"]
 	path = awmodoro
 	url = https://github.com/optama/awmodoro.git
+[submodule "deficient"]
+	path = deficient
+	url = https://github.com/deficient/deficient

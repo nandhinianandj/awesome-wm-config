@@ -3,7 +3,7 @@ local gears = require("gears")
 local awful = require("awful")
 require("awful.autofocus")
 -- Widget and layout library
-local wibox = require("wibox")
+local wibar = require("wibox")
 -- Theme handling library
 local beautiful = require("beautiful")
 -- Notification library
@@ -17,50 +17,64 @@ require("awful.hotkeys_popup.keys")
 local screenful = require("screenful")
 local awmodoro = require("awmodoro")
 
--- local power = require("power_widget")
+local deficient = require("deficient")
 
---power.warning_config = {
---  percentage = 15,
---  message = "The battery is getting low",
---  preset = {
---    shape = gears.shape.rounded_rect,
---    timeout = 12,
---    bg = "#FFFF00",
---    fg = "#000000",
---  },
---}
----- override the GUI client.
---power.gui_client = "xfce4-power-manager-settings"
----- override the critical battery percentage
---power.critical_percentage = 25
 
---pomodoro wibox
-pomowibox = awful.wibox({ position = "top", screen = 1, height=4})
-pomowibox.visible = false
+-- instanciate widget
+local battery_widget = deficient.battery_widget {
+    -- pass options here
+    ac = "AC",
+    adapter = "BAT1",
+    ac_prefix = "AC: ",
+    bttery_prefix = "Bat: ",
+    percent_colors = {
+        { 25, "red"   },
+        { 50, "orange"},
+        {999, "green" },
+    },
+    listen = true,
+    timeout = 10,
+    widget_text = "${AC_BAT}${color_on}${percent}%${color_off}",
+    widget_font = "Deja Vu Sans Mono 16",
+    tooltip_text = "Battery ${state}${time_est}\nCapacity: ${capacity_percent}%",
+    alert_threshold = 5,
+    alert_timeout = 0,
+    alert_title = "Low battery !",
+    alert_text = "${AC_BAT}${time_est}",
+    alert_icon = "~/Downloads/low_battery_icon.png",
+    warn_full_battery = true,
+    full_battery_icon = "~/Downloads/full_battery_icon.png",
+}
+-- Instanciate widget:
+local cpuinfo = deficient.cpuinfo()
+
+--pomodoro wibar
+pomowibar = awful.wibox({ position = "top", screen = 1, height=4})
+pomowibar.visible = false
 local pomodoro = awmodoro.new({
 	minutes 			= 45,
 	do_notify 			= true,
 	active_bg_color 	= '#313131',
 	paused_bg_color 	= '#7746D7',
-	fg_color			= {type = "linear", from = {0,0}, to = {pomowibox.width, 0}, stops = {{0, "#AECF96"},{0.5, "#88A175"},{1, "#FF5656"}}},
-	width 				= pomowibox.width,
-	height 				= pomowibox.height, 
+	fg_color			= {type = "linear", from = {0,0}, to = {pomowibar.width, 0}, stops = {{0, "#AECF96"},{0.5, "#88A175"},{1, "#FF5656"}}},
+	width 				= pomowibar.width,
+	height 				= pomowibar.height, 
 
 	begin_callback = function()
 		for s in screen do
-			s.mywibox.visible = false
+			s.mywibar.visible = false
 		end
-		pomowibox.visible = true
+		pomowibar.visible = true
 	end,
 
 	finish_callback = function()
     awful.util.spawn("aplay	/home/foo/sounds/bell.wav")
 		for s in screen do
-			s.mywibox.visible = true
+			s.mywibar.visible = true
 		end
-		pomowibox.visible = false
+		pomowibar.visible = false
 	end})
-pomowibox:set_widget(pomodoro)
+pomowibar:set_widget(pomodoro)
 
 -- Load Debian menu entries
 -- local debian = require("debian.menu")
@@ -134,17 +148,17 @@ beautiful.font = "monospace 18"
 -- configuration - edit to your liking
 wp_index = 1
 wp_timeout  = 300
-wp_path = string.format("/home/nands/Downloads/memes", os.getenv("HOME"))
+wp_path = string.format("%s/memes", os.getenv("HOME"))
 wp_files = scandir(wp_path)
 
 --nomi_wp = wp_path .. '/' .. '87176258_10158216083568586_2744505873333223424_o.jpg'
 --climate_wp = wp_path .. '/' .. 'climateChangeDenialismStrategies.png'
 -- climate_risks = wp_path .. '/' .. '1682973858638.jpeg'
-buddha = wp_path .. '/' .. 'hm8uqv2t8j4e1.jpeg'
+buddha = wp_path .. '/quotes/' .. 'hm8uqv2t8j4e1.jpeg'
 -- cc1_layout = wp_path .. '/' .. 'cc1_alpha_layout.png'
 -- set wallpaper to current index for all screens
 for s = 1, screen.count() do
-    gears.wallpaper.maximized(wp_path .. '/' .. buddha, s, true)
+    gears.wallpaper.maximized(buddha, s, true)
     -- gears.wallpaper.maximized(cc1_layout, s, true)
 end
 
@@ -230,7 +244,7 @@ local function client_menu_toggle_fn()
     local instance = nil
 
     return function ()
-        if instance and instance.wibox.visible then
+        if instance and instance.wibar.visible then
             instance:hide()
             instance = nil
         else
@@ -283,7 +297,7 @@ menubar.height = 50
 
 -- Volume control widget
 
-tb_volume = wibox.widget({ type = "textbox", name = "tb_volume", align = "right" })
+tb_volume = wibar.widget({ type = "textbox", name = "tb_volume", align = "right" })
  tb_volume:buttons({
  	button({ }, 4, function () volume("up", tb_volume) end),
  	button({ }, 5, function () volume("down", tb_volume) end),
@@ -295,9 +309,9 @@ tb_volume = wibox.widget({ type = "textbox", name = "tb_volume", align = "right"
 mykeyboardlayout = awful.widget.keyboardlayout()
 
 -- Create a textclock widget
-mytextclock = wibox.widget.textclock()
+mytextclock = wibar.widget.textclock()
 
--- Create a wibox for each screen and add it
+-- Create a wibar for each screen and add it
 local taglist_buttons = gears.table.join(
                     awful.button({ }, 1, function(t) t:view_only() end),
                     awful.button({ modkey }, 1, function(t)
@@ -379,29 +393,9 @@ awful.screen.connect_for_each_screen(function(s)
     -- Create a tasklist widget
     s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, tasklist_buttons)
 
-    -- Create the wibox
-    s.mywibox = awful.wibar({ position = "top", screen = s })
+    -- Create the wibar
+    s.mywibar = awful.wibar({ position = "top", screen = s })
 
-    -- Add widgets to the wibox
-    s.mywibox:setup {
-        layout = wibox.layout.align.horizontal,
-        { -- Left widgets
-            layout = wibox.layout.fixed.horizontal,
-            mylauncher,
-            s.mytaglist,
-            s.mypromptbox,
-        },
-        s.mytasklist, -- Middle widget
-        { -- Right widgets
-            layout = wibox.layout.fixed.horizontal,
-            tb_volume,
-            mykeyboardlayout,
-            wibox.widget.systray(),
-            mytextclock,
-            power,
-            s.mylayoutbox,
-        },
-    }
 end)
 
 -- {{{ Mouse bindings
@@ -678,7 +672,7 @@ client.connect_signal("request::titlebars", function(c)
         { -- Left
             awful.titlebar.widget.iconwidget(c),
             buttons = buttons,
-            layout  = wibox.layout.fixed.horizontal
+            layout  = wibar.layout.fixed.horizontal
         },
         { -- Middle
             { -- Title
@@ -686,7 +680,7 @@ client.connect_signal("request::titlebars", function(c)
                 widget = awful.titlebar.widget.titlewidget(c)
             },
             buttons = buttons,
-            layout  = wibox.layout.flex.horizontal
+            layout  = wibar.layout.flex.horizontal
         },
         { -- Right
             awful.titlebar.widget.floatingbutton (c),
@@ -694,9 +688,9 @@ client.connect_signal("request::titlebars", function(c)
             awful.titlebar.widget.stickybutton   (c),
             awful.titlebar.widget.ontopbutton    (c),
             awful.titlebar.widget.closebutton    (c),
-            layout = wibox.layout.fixed.horizontal()
+            layout = wibar.layout.fixed.horizontal()
         },
-        layout = wibox.layout.align.horizontal
+        layout = wibar.layout.align.horizontal
     }
 end)
 
@@ -729,4 +723,4 @@ awful.util.spawn("nohup syncthing &")
 --awful.util.spawn("nohup telegram-desktop &")
 --awful.util.spawn("nohup /opt/cisco/anyconnect/bin/vpnui &")
 -- awful.util.spawn("xscreensaver &")
-awful.util.spawn("sudo " .. string.format("%s/playspace/get-shit-done/get-shit-done.py work;", os.getenv("HOME")))
+-- awful.util.spawn("sudo " .. string.format("%s/playspace/get-shit-done/get-shit-done.py work;", os.getenv("HOME")))
