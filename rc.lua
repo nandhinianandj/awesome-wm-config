@@ -165,41 +165,14 @@ for s = 1, screen.count() do
     gears.wallpaper.maximized(buddha, s, true)
 end
 
+
 -- Setup Volume control
-cardid  = 3
-channel = "Master"
-function volume (mode, widget)
-	if mode == "update" then
-             local fd = io.popen("amixer -c " .. cardid .. " -- sget " .. channel)
-             local status = fd:read("*all")
-             fd:close()
+local deficient = require("deficient")
 
-		local volume = string.match(status, "(%d?%d?%d)%%")
-		volume = string.format("% 3d", volume)
 
-		status = string.match(status, "%[(o[^%]]*)%]")
+-- instanciate volume control, using default settings:
+volumecfg = deficient.volume_control({})
 
-		if string.find(status, "on", 1, true) then
-			volume = volume .. "%"
-		else
-			volume = volume .. "M"
-		end
-		widget.text = volume
-	elseif mode == "up" then
-		io.popen("amixer -q -c " .. cardid .. " sset " .. channel .. " 5%+"):read("*all")
-		volume("update", widget)
-	elseif mode == "down" then
-		io.popen("amixer -q -c " .. cardid .. " sset " .. channel .. " 5%-"):read("*all")
-		volume("update", widget)
-	else
-		io.popen("amixer -c " .. cardid .. " sset " .. channel .. " toggle"):read("*all")
-		volume("update", widget)
-	end
-end
--- -- make sure volume level is reflected in the widget
--- vol_timer = timer {timeout = 10}
--- vol_timer:connect_signal("timeout", function() volume("update", tb_volume) end)
--- vol_timer:start()
 
 --- Variables
 local names = {  "WorldWideWeb", "CodeMode", "Commune", "Miscellaneous"}
@@ -403,7 +376,7 @@ awful.screen.connect_for_each_screen(function(s)
             mytextclock,
             battery_widget,
             cpuinfo.widget,
-            screensaver_ctrl,
+            volumecfg.widget,
             s.mylayoutbox,
         },
     }
@@ -494,21 +467,12 @@ globalkeys = gears.table.join(
     		{description="lock screen", group="layout"}),
     -- Prompt
     awful.key({ modkey },            "r",     function () awful.screen.focused().mypromptbox:run() end,
-              {description = "run prompt", group = "launcher"})
+              {description = "run prompt", group = "launcher"}),
 
-    -- awful.key({ modkey }, "x",
-    --           function ()
-    --               awful.prompt.run {
-    --                 prompt       = "Run Lua code: ",
-    --                 textbox      = awful.screen.focused().mypromptbox.widget,
-    --                 exe_callback = awful.util.eval,
-    --                 history_path = awful.util.get_cache_dir() .. "/history_eval"
-    --               }
-    --           end,
-    --           {description = "lua execute prompt", group = "awesome"}),
-    -- Menubar
-    -- awful.key({ modkey }, "p", function() menubar.show() end,
-    --           {description = "show the menubar", group = "launcher"})
+    -- Volume controls
+    awful.key({}, "XF86AudioRaiseVolume", function() volumecfg:up() end),
+    awful.key({}, "XF86AudioLowerVolume", function() volumecfg:down() end),
+    awful.key({}, "XF86AudioMute",        function() volumecfg:toggle() end)
 )
 
 clientkeys = gears.table.join(
