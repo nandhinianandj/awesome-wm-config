@@ -687,7 +687,7 @@ awful.util.spawn("nohup rescuetime &")
 -- awful.util.spawn("nohup spotify &")
 -- redshift
 -- awful.util.spawn("nohup redshift &")
-awful.util.spawn('nohup signal-desktop --password-store="gnome-libsecret"&')
+awful.util.spawn('nohup signal-desktop --password-store="gnome-libsecret" &')
 -- awful.util.spawn("nohup teams &")
 -- awful.util.spawn("nohup skypeforlinux &")
 -- awful.util.spawn("nohup gitter &")
