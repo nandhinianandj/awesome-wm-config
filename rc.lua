@@ -444,7 +444,7 @@ globalkeys = gears.table.join(
     -- Standard program
     awful.key({ modkey,           }, "Return", function () awful.spawn(terminal) end,
               {description = "open a terminal", group = "launcher"}),
-    awful.key({ modkey, "Shift"   }, "Escape", function () awful.util.spawn("sudo systemctl hibernate") end,
+    awful.key({ modkey, "Shift"   }, "h", function () awful.util.spawn("systemctl hibernate") end,
               {description = "trigger Yad tools", group="awesome"}),
     awful.key({ modkey, "Shift"   }, "q", awesome.quit,
               {description = "quit awesome", group = "awesome"}),
