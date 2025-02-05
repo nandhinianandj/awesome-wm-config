@@ -59,7 +59,8 @@ local pomodoro = awmodoro.new({
 	do_notify 			= true,
 	active_bg_color 	= '#313131',
 	paused_bg_color 	= '#7746D7',
-	fg_color			= {type = "linear", from = {0,0}, to = {pomowibar.width, 0}, stops = {{0, "#AECF96"},{0.5, "#88A175"},{1, "#FF5656"}}},
+	fg_color			= {type = "linear", from = {0,0}, to = {pomowibar.width, 0}, 
+                    stops = {{0, "#AECF96"},{0.5, "#88A175"},{1, "#FF5656"}}},
 	width 				= pomowibar.width,
 	height 				= pomowibar.height, 
 
