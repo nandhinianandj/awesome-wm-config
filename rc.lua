@@ -18,7 +18,7 @@ local screenful = require("screenful")
 local awmodoro = require("awmodoro")
 
 local deficient = require("deficient")
-
+-- local wsm = require("workspace")
 -- instanciate calendar widget
 local calendar_widget = deficient.calendar({})
 
