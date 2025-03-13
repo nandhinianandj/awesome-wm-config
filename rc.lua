@@ -601,7 +601,7 @@ awful.rules.rules = {
      { rule_any = { class = { "firefox", "Chromium-browser", "Firefox", "Opera", "Brave" } },
       properties = { tag = "WorldWideWeb" } },
 
-     { rule_any = { class = { "zed", "cursor", "Spyder", "Code"} },
+     { rule_any = { class = { "zed", "cursor", "Spyder", "Code", "Replit"} },
       properties = { tag = "CodeMode" } },
      
       { rule_any = { class = { "xterm", "gnome-terminal", "lxterminal", "mate-terminal"} },
