@@ -176,7 +176,7 @@ volumecfg = deficient.volume_control({})
 
 
 --- Variables
-local names = {  "WorldWideWeb", "CodeMode", "Commune", "Miscellaneous"}
+local names = {  "WorldWideWeb", "CodeMode", "Commune", "BackgroundDaemons","Miscellaneous"}
 
 -- This is used later as the default terminal and editor to run.
 terminal = "lxterminal"
@@ -601,8 +601,11 @@ awful.rules.rules = {
      { rule_any = { class = { "firefox", "Chromium-browser", "Firefox", "Opera", "Brave" } },
       properties = { tag = "WorldWideWeb" } },
 
-     { rule_any = { class = { "xterm", "gnome-terminal", "lxterminal", "mate-terminal", "zed", "cursor", "Code"} },
+     { rule_any = { class = { "zed", "cursor", "Code"} },
       properties = { tag = "CodeMode" } },
+     
+      { rule_any = { class = { "xterm", "gnome-terminal", "lxterminal", "mate-terminal"} },
+      properties = { tag = "BackgroundDaemons" } },
 
       { rule_any = { class = { "Signal", "Slack", "Teams", "Zoom Meeting", "Telegram", "Discord", "meet" } },
             properties = { tag = "Commune" } },
