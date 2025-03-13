@@ -176,7 +176,7 @@ volumecfg = deficient.volume_control({})
 
 
 --- Variables
-local names = {  "WorldWideWeb", "CodeMode", "Commune", "BackgroundDaemons","Miscellaneous"}
+local names = {  "WorldWideWeb", "CodeMode", "Commune", "BgDaemons","Miscellaneous"}
 
 -- This is used later as the default terminal and editor to run.
 terminal = "lxterminal"
