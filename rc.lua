@@ -15,7 +15,7 @@ local hotkeys_popup = require("awful.hotkeys_popup").widget
 require("awful.hotkeys_popup.keys")
 
 local screenful = require("screenful")
-local awmodoro = require("awmodoro")
+-- local awmodoro = require("awmodoro")
 
 local deficient = require("deficient")
 -- local wsm = require("workspace")
@@ -54,31 +54,31 @@ local cpuinfo = deficient.cpuinfo()
 --pomodoro wibar
 pomowibar = awful.wibar({ position = "top", screen = 1, height=4})
 pomowibar.visible = false
-local pomodoro = awmodoro.new({
-	minutes 			= 45,
-	do_notify 			= true,
-	active_bg_color 	= '#313131',
-	paused_bg_color 	= '#7746D7',
-	fg_color			= {type = "linear", from = {0,0}, to = {pomowibar.width, 0}, 
-                    stops = {{0, "#AECF96"},{0.5, "#88A175"},{1, "#FF5656"}}},
-	width 				= pomowibar.width,
-	height 				= pomowibar.height, 
-
-	begin_callback = function()
-		for s in screen do
-			s.mywibar.visible = false
-		end
-		pomowibar.visible = true
-	end,
-
-	finish_callback = function()
-    awful.util.spawn("aplay	/home/foo/sounds/bell.wav")
-		for s in screen do
-			s.mywibar.visible = true
-		end
-		pomowibar.visible = false
-	end})
-pomowibar:set_widget(pomodoro)
+-- local pomodoro = awmodoro.new({
+-- 	minutes 			= 45,
+-- 	do_notify 			= true,
+-- 	active_bg_color 	= '#313131',
+-- 	paused_bg_color 	= '#7746D7',
+-- 	fg_color			= {type = "linear", from = {0,0}, to = {pomowibar.width, 0},
+--                     stops = {{0, "#AECF96"},{0.5, "#88A175"},{1, "#FF5656"}}},
+-- 	width 				= pomowibar.width,
+-- 	height 				= pomowibar.height,
+--
+-- 	begin_callback = function()
+-- 		for s in screen do
+-- 			s.mywibar.visible = false
+-- 		end
+-- 		pomowibar.visible = true
+-- 	end,
+--
+-- 	finish_callback = function()
+--     awful.util.spawn("aplay	/home/foo/sounds/bell.wav")
+-- 		for s in screen do
+-- 			s.mywibar.visible = true
+-- 		end
+-- 		pomowibar.visible = false
+-- 	end})
+-- pomowibar:set_widget(pomodoro)
 
 -- Load Debian menu entries
 -- local debian = require("debian.menu")
@@ -598,13 +598,13 @@ awful.rules.rules = {
     -- Set Firefox to always map on the tag named "2" on screen 1.
     -- { rule = { class = "Firefox" },
     --   properties = { screen = 1, tag = "2" } },
-     { rule_any = { class = { "Chrome", "Chromium-browser", 
+     { rule_any = { class = { "Chrome", "Chromium-browser",
                               "Firefox", "Opera", "Brave" } },
       properties = { tag = "WorldWideWeb" } },
 
      { rule_any = { class = { "zed", "cursor", "Spyder", "Code", "Replit"} },
       properties = { tag = "CodeMode" } },
-     
+
       { rule_any = { class = { "xterm", "gnome-terminal", "lxterminal", "mate-terminal"} },
       properties = { tag = "BgDaemons" } },
 
