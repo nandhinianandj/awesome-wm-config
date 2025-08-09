@@ -268,7 +268,18 @@ tb_volume = wibar.widget({ type = "textbox", name = "tb_volume", align = "right"
 -- volume("update", tb_volume)
 
 -- Keyboard map indicator and switcher
-mykeyboardlayout = awful.widget.keyboardlayout()
+mykeyboardlayout = deficient.keyboard_layout_indicator({
+                    layouts = {
+                        {name="dv",  layout="de",  variant="dvorak"},
+                        {name="us",  layout="us",  variant=nil}
+                        {name="ta",  layout="tamil",  variant="tamil99"},
+                    },
+                    -- optionally, specify commands to be executed after changing layout:
+                    post_set_hooks = {
+                        -- "xmodmap ~/.Xmodmap",
+                        "setxkbmap -option caps:escape"
+                    }
+                })
 
 -- Create a textclock widget
 mytextclock = wibar.widget.textclock()
