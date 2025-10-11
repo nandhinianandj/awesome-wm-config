@@ -270,9 +270,9 @@ tb_volume = wibar.widget({ type = "textbox", name = "tb_volume", align = "right"
 -- Keyboard map indicator and switcher
 mykeyboardlayout = deficient.keyboard_layout_indicator({
                     layouts = {
-                        {name="dv",  layout="us",  variant="dvorak"},
-                        {name="us",  layout="in",  variant=tamilnet},
-                        {name="ta",  layout="in",  variant="tamilnet_TAB"},
+                        {name="usdv",  layout="us",  variant="dvorak"},
+                        {name="ta",  layout="in",  variant="tamilnet"},
+                        {name="ta_tab",  layout="in",  variant="tamilnet_TAB"},
                     },
                     -- optionally, specify commands to be executed after changing layout:
                     post_set_hooks = {
