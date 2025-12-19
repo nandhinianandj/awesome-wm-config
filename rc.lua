@@ -613,7 +613,7 @@ awful.rules.rules = {
                               "Firefox", "Opera", "Brave" } },
       properties = { tag = "WorldWideWeb" } },
 
-     { rule_any = { class = { "zed", "cursor", "Spyder", "Code", "Replit"} },
+     { rule_any = { class = { "zed", "cursor", "Spyder", "AntiGravity", "Code", "Replit"} },
       properties = { tag = "CodeMode" } },
 
       { rule_any = { class = { "xterm", "gnome-terminal", "lxterminal", "mate-terminal"} },
@@ -622,7 +622,7 @@ awful.rules.rules = {
       { rule_any = { class = { "Signal", "Slack", "Teams", "Zoom Meeting", "Telegram", "Discord", "meet" } },
             properties = { tag = "Commune" } },
 
-      { rule_any = { class = { "Cisco Anyconnect", "Spotify" } },
+      { rule_any = { class = { "Cisco Anyconnect", "Spotify", "Transmission" } },
       properties = { tag = "Misc" } },
 }
 -- }}}
