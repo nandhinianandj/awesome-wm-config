@@ -267,20 +267,6 @@ tb_volume = wibar.widget({ type = "textbox", name = "tb_volume", align = "right"
  })
 -- volume("update", tb_volume)
 
--- Keyboard map indicator and switcher
-mykeyboardlayout = deficient.keyboard_layout_indicator({
-                    layouts = {
-                        {name="usdv",  layout="us",  variant="dvorak"},
-                        {name="ta",  layout="in",  variant="tamilnet"},
-                        {name="ta_tab",  layout="in",  variant="tamilnet_TAB"},
-                    },
-                    -- optionally, specify commands to be executed after changing layout:
-                    post_set_hooks = {
-                        -- "xmodmap ~/.Xmodmap",
-                        "setxkbmap -option caps:escape"
-                    }
-                })
-
 -- Create a textclock widget
 mytextclock = wibar.widget.textclock()
 -- attach calendar it as popup to your text clock widget
@@ -383,7 +369,6 @@ awful.screen.connect_for_each_screen(function(s)
         { -- Right widgets
             layout = wibar.layout.fixed.horizontal,
             tb_volume,
-            mykeyboardlayout,
             wibar.widget.systray(),
             mytextclock,
             battery_widget,
@@ -715,3 +700,6 @@ awful.util.spawn("nohup Telegram  &")
 --awful.util.spawn("nohup /opt/cisco/anyconnect/bin/vpnui &")
 -- awful.util.spawn("xscreensaver &")
 -- awful.util.spawn("sudo " .. string.format("%s/playspace/get-shit-done/get-shit-done.py work;", os.getenv("HOME")))
+-- Start Ibus keyboard layout
+awful.spawn.with_shell("~/.config/awesome/ibus_starter.sh")
+
