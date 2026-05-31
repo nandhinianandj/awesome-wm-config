@@ -702,4 +702,9 @@ awful.util.spawn("nohup Telegram  &")
 -- awful.util.spawn("sudo " .. string.format("%s/playspace/get-shit-done/get-shit-done.py work;", os.getenv("HOME")))
 -- Start Ibus keyboard layout
 awful.spawn.with_shell("~/.config/awesome/ibus_starter.sh")
+-- Add this to rc.lua
+awful.spawn.with_shell("setxkbmap -layout us,in -variant ,tam_tamil99 -option grp:alt_shift_toggle")
+awful.util.spawn("export $(dbus-launch)")
+-- Start GNOME Keyring daemon
+awful.spawn.with_shell("eval $(ssh-agent); eval $(gnome-keyring-daemon --start --components=pkcs11,secrets,ssh)")
 
