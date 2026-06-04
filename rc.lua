@@ -51,6 +51,9 @@ local battery_widget = deficient.battery_widget {
 -- Instanciate cpu info widget:
 local cpuinfo = deficient.cpuinfo()
 
+--Net speed info widget 
+local net_speed_widget = require("awesome-wm-widgets.net-speed-widget.net-speed")
+
 --pomodoro wibar
 pomowibar = awful.wibar({ position = "top", screen = 1, height=4})
 pomowibar.visible = false
@@ -371,9 +374,10 @@ awful.screen.connect_for_each_screen(function(s)
             tb_volume,
             wibar.widget.systray(),
             mytextclock,
-            battery_widget,
             cpuinfo.widget,
-            volumecfg.widget,
+            net_speed_widget(),
+            battery_widget,
+            -- volumecfg.widget,
             s.mylayoutbox,
         },
     }
@@ -398,6 +402,10 @@ globalkeys = gears.table.join(
               {description = "view next", group = "tag"}),
     awful.key({ modkey,           }, "Escape", awful.tag.history.restore,
               {description = "go back", group = "tag"}),
+    -- Trigger the manual detect
+    awful.key({ modkey, "Control" }, "m", function () awful.spawn.with_shell("~/.config/awesome/monitor.sh")
+            end, {description = "detect external monitor", group = "screen"}),
+
     -- Toggle microphone state
     awful.key({ modkey, "Shift" }, "m",
           function ()
@@ -707,4 +715,8 @@ awful.spawn.with_shell("setxkbmap -layout us,in -variant ,tam_tamil99 -option gr
 awful.util.spawn("export $(dbus-launch)")
 -- Start GNOME Keyring daemon
 awful.spawn.with_shell("eval $(ssh-agent); eval $(gnome-keyring-daemon --start --components=pkcs11,secrets,ssh)")
+-- Automatically handle external monitor on startup-- Automatically start the display hotplug daemon
+-- Only start the display daemon if an instance isn't already running
+awful.spawn.with_shell("pgrep -f monitor-daemon.sh || ~/.local/bin/monitor-daemon.sh")
+
 
