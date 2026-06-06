@@ -1,4 +1,6 @@
+GEMINI.md
 .aider*
 *.swp
 *~
 *.bak
+.dual-graph/

@@ -179,7 +179,7 @@ volumecfg = deficient.volume_control({})
 
 
 --- Variables
-local names = {  "WorldWideWeb", "CodeMode", "Commune", "BgDaemons","Misc"}
+local names = {  "WorldWideWeb", "CodeMode", "Commune", "BgDaemons","Misc", "Monitor"}
 
 -- This is used later as the default terminal and editor to run.
 terminal = "lxterminal"
@@ -333,13 +333,99 @@ end
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
 screen.connect_signal("property::geometry", set_wallpaper)
 
+-- Lightweight text-based widgets
+local cpu_widget = wibar.widget.textbox()
+local cpu_prev_total, cpu_prev_active = 0, 0
+awful.widget.watch("grep 'cpu ' /proc/stat", 1, function(widget, stdout)
+    local user, nice, system, idle, iowait, irq, softirq, steal, guest, guest_nice = stdout:match("cpu%s+(%d+)%s+(%d+)%s+(%d+)%s+(%d+)%s+(%d+)%s+(%d+)%s+(%d+)%s+(%d+)%s+(%d+)%s+(%d+)")
+    local total = user + nice + system + idle + iowait + irq + softirq + steal
+    local active = total - idle
+    local diff_total = total - cpu_prev_total
+    local diff_active = active - cpu_prev_active
+    if diff_total > 0 then
+        local usage = math.floor((diff_active / diff_total) * 100)
+        widget:set_text(" CPU: " .. usage .. "% ")
+    end
+    cpu_prev_total = total
+    cpu_prev_active = active
+end, cpu_widget)
+
+local net_widget = wibar.widget.textbox()
+local net_prev_rx, net_prev_tx = 0, 0
+awful.widget.watch("cat /proc/net/dev", 1, function(widget, stdout)
+    local rx, tx = 0, 0
+    for line in stdout:gmatch("[^\r\n]+") do
+        local r, t = line:match("%s+(%d+)%s+%d+%s+%d+%s+%d+%s+%d+%s+%d+%s+%d+%s+%d+%s+(%d+)")
+        if r and t then
+            rx = rx + tonumber(r)
+            tx = tx + tonumber(t)
+        end
+    end
+    local down = math.floor((rx - net_prev_rx) / 1024)
+    local up = math.floor((tx - net_prev_tx) / 1024)
+    widget:set_text(" NET: ↓" .. down .. " ↑" .. up .. " KB/s ")
+    net_prev_rx = rx
+    net_prev_tx = tx
+end, net_widget)
+
+local disk_widget = wibar.widget.textbox()
+local disk_prev_read, disk_prev_write = 0, 0
+awful.widget.watch("cat /proc/diskstats", 1, function(widget, stdout)
+    local read, write = 0, 0
+    for line in stdout:gmatch("[^\r\n]+") do
+        local r, w = line:match("%s+%d+%s+%d+%s+sd[a-z]%s+%d+%s+%d+%s+(%d+)%s+%d+%s+%d+%s+%d+%s+(%d+)")
+        if r and w then
+            read = read + tonumber(r) * 512
+            write = write + tonumber(w) * 512
+        end
+    end
+    local read_rate = math.floor((read - disk_prev_read) / 1024 / 1024)
+    local write_rate = math.floor((write - disk_prev_write) / 1024 / 1024)
+    widget:set_text(" DISK: R" .. read_rate .. " W" .. write_rate .. " MB/s ")
+    disk_prev_read = read
+    disk_prev_write = write
+end, disk_widget)
+
+local gpu_widget = wibar.widget.textbox()
+awful.widget.watch("nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader,nounits", 5, function(widget, stdout)
+    local usage = stdout:match("%d+")
+    if usage then
+        widget:set_text(" GPU: " .. usage .. "% ")
+    else
+        widget:set_text("")
+    end
+end, gpu_widget)
+
 --- For each screen do these actions
 awful.screen.connect_for_each_screen(function(s)
     -- Set Wallpaper
     set_wallpaper(s)
 
     -- Each screen has its own tag table.
-    awful.tag(names, s, awful.layout.layouts[1])
+    local tags = awful.tag(names, s, awful.layout.layouts[1])
+
+    if s.index == 1 then
+        -- Find the Monitor tag on the laptop screen
+        local monitor_tag = nil
+        for _, t in ipairs(tags) do
+            if t.name == "Monitor" then
+                monitor_tag = t
+                break
+            end
+        end
+
+        if monitor_tag then
+            monitor_tag.layout = awful.layout.suit.tile
+            monitor_tag:view_only()
+
+            -- Ensure "Monitor" tag stays selected on screen 1
+            monitor_tag:connect_signal("property::selected", function(tag)
+                if not tag.selected then
+                    tag:view_only()
+                end
+            end)
+        end
+    end
 
     -- Create a promptbox for each screen
     s.mypromptbox = awful.widget.prompt()
@@ -374,8 +460,10 @@ awful.screen.connect_for_each_screen(function(s)
             tb_volume,
             wibar.widget.systray(),
             mytextclock,
-            cpuinfo.widget,
-            net_speed_widget(),
+            cpu_widget,
+            net_widget,
+            disk_widget,
+            gpu_widget,
             battery_widget,
             -- volumecfg.widget,
             s.mylayoutbox,
@@ -606,6 +694,10 @@ awful.rules.rules = {
                               "Firefox", "Opera", "Brave" } },
       properties = { tag = "WorldWideWeb" } },
 
+     -- Monitoring apps routing
+     { rule_any = { class = { "sys-btop", "sys-iotop", "sys-nmon" } },
+       properties = { screen = 1, tag = "Monitor", switch_to_tags = false } },
+
      { rule_any = { class = { "zed", "cursor", "Spyder", "AntiGravity", "Code", "Replit"} },
       properties = { tag = "CodeMode" } },
 
@@ -718,5 +810,12 @@ awful.spawn.with_shell("eval $(ssh-agent); eval $(gnome-keyring-daemon --start -
 -- Automatically handle external monitor on startup-- Automatically start the display hotplug daemon
 -- Only start the display daemon if an instance isn't already running
 awful.spawn.with_shell("pgrep -f monitor-daemon.sh || ~/.local/bin/monitor-daemon.sh")
+
+-- Launch monitoring apps on startup
+gears.timer.delayed_call(function()
+    awful.spawn("xterm -class sys-btop -e btop")
+    awful.spawn("xterm -class sys-iotop -e 'sudo iotop'")
+    awful.spawn("xterm -class sys-nmon -e nmon")
+end)
 
 
