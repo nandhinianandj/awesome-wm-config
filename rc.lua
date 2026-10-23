@@ -54,6 +54,30 @@ local cpuinfo = deficient.cpuinfo()
 --Net speed info widget 
 local net_speed_widget = require("awesome-wm-widgets.net-speed-widget.net-speed")
 
+
+-- Create an IBus input method text indicator widget
+myibuswidget = wibar.widget.textbox()
+myibuswidget:set_text(" [EN] ") -- Fallback string text label
+
+-- Update the bar widget dynamically using a background shell timer loop
+gears.timer {
+    timeout   = 1,
+    call_now  = true,
+    autostart = true,
+    callback  = function()
+        awful.spawn.easy_async_with_shell("ibus engine", function(stdout)
+            local engine = stdout:gsub("%\n", "")
+            if engine:match("tamilnet99") then
+                myibuswidget:set_text(" [தமிழ்] ")
+            elseif engine:match("dvorak") then
+                myibuswidget:set_text(" [DV] ")
+            else
+                myibuswidget:set_text(" [QW] ")
+            end
+        end)
+    end
+}
+
 --pomodoro wibar
 pomowibar = awful.wibar({ position = "top", screen = 1, height=4})
 pomowibar.visible = false
@@ -404,7 +428,8 @@ awful.screen.connect_for_each_screen(function(s)
     -- Each screen has its own tag table.
     local tags = awful.tag(names, s, awful.layout.layouts[1])
 
-    if s.index == 1 then
+    -- Only apply "Monitor Lock" if an external monitor is connected
+    if s.index == 1 and screen.count() > 1 then
         -- Find the Monitor tag on the laptop screen
         local monitor_tag = nil
         for _, t in ipairs(tags) do
@@ -443,6 +468,9 @@ awful.screen.connect_for_each_screen(function(s)
     -- Create a tasklist widget
     s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, tasklist_buttons)
 
+    -- Create a switch user widget for each screen
+    s.switch_user_widget = require("widgets/switch_user")()
+
     -- Create the wibar
     s.mywibar = awful.wibar({ position = "top", screen = s })
         -- Add widgets to the wibar
@@ -466,6 +494,7 @@ awful.screen.connect_for_each_screen(function(s)
             battery_widget,
             mytextclock,
             -- volumecfg.widget,
+            s.switch_user_widget,
             s.mylayoutbox,
         },
     }
@@ -811,11 +840,19 @@ awful.spawn.with_shell("eval $(ssh-agent); eval $(gnome-keyring-daemon --start -
 -- Only start the display daemon if an instance isn't already running
 awful.spawn.with_shell("pgrep -f monitor-daemon.sh || ~/.local/bin/monitor-daemon.sh")
 
--- Launch monitoring apps on startup
+-- Start IBus on AwesomeWM startup
+awful.spawn.with_shell("export GTK_IM_MODULE=ibus")
+awful.spawn.with_shell("export QT_IM_MODULE=ibus")
+awful.spawn.with_shell("export XMODIFIERS=@im=ibus")
+awful.spawn.with_shell("ibus-daemon -rx")
+
+-- Launch monitoring apps on startup if external monitor is connected
 gears.timer.delayed_call(function()
-    awful.spawn("xterm -class sys-btop -e btop")
-    awful.spawn("xterm -class sys-iotop -e 'sudo iotop'")
-    awful.spawn("xterm -class sys-nmon -e nmon")
+    if screen.count() > 1 then
+        awful.spawn("xterm -class sys-btop -e btop")
+        awful.spawn("xterm -class sys-iotop -e 'sudo -n iotop'")
+        awful.spawn("xterm -class sys-nmon -e nmon")
+    end
 end)
 
 
